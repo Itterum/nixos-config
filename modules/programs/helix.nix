@@ -107,8 +107,7 @@
       language-server = {
         # TypeScript / JavaScript
         typescript-language-server = {
-          command =
-            "${pkgs.typescript-language-server}/bin/typescript-language-server";
+          command = "${pkgs.typescript-language-server}/bin/typescript-language-server";
 
           args = [
             "--stdio"
@@ -167,8 +166,7 @@
 
         # Python
         basedpyright = {
-          command =
-            "${pkgs.basedpyright}/bin/basedpyright-langserver";
+          command = "${pkgs.basedpyright}/bin/basedpyright-langserver";
 
           args = [ "--stdio" ];
         };
@@ -313,8 +311,7 @@
           formatter = {
             # В nixpkgs пакет называется csharpier,
             # но binary — dotnet-csharpier
-            command =
-              "${pkgs.csharpier}/bin/dotnet-csharpier";
+            command = "${pkgs.csharpier}/bin/dotnet-csharpier";
 
             args = [
               "format"
@@ -331,8 +328,7 @@
           language-servers = [ "nixd" ];
 
           formatter = {
-            command =
-              "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+            command = "${pkgs.nixfmt}/bin/nixfmt";
           };
 
           auto-format = true;
@@ -368,7 +364,7 @@
 
       # Nix
       nixd
-      nixfmt-rfc-style
+      nixfmt
     ];
   };
 }
