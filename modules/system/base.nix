@@ -1,8 +1,25 @@
 { pkgs, ... }:
 
 {
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    systemd-boot.enable = false;
+
+    efi.canTouchEfiVariables = true;
+
+    limine = {
+      enable = true;
+
+      maxGenerations = 5;
+
+      extraEntries = ''
+        /Windows 11
+        protocol: efi_boot_entry
+        entry: Windows Boot Manager
+      '';
+    };
+
+    timeout = 15;
+  };
 
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
