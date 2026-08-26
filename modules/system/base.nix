@@ -39,6 +39,7 @@
   services.power-profiles-daemon.enable = false;
   services.udisks2.enable = true;
   services.gvfs.enable = true;
+  services.upower.enable = true;
 
   system.stateVersion = "26.05";
 }
