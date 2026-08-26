@@ -36,10 +36,16 @@
   users.users.itterum = {
     isNormalUser = true;
     description = "itterum";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
@@ -48,6 +54,12 @@
     ghostty
     keepassxc
     nautilus
+    fastfetch
+    btop
+  ];
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
   ];
 
   services.tlp.enable = true;
