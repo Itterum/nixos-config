@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ../../modules/system/base.nix
     ../../modules/hardware/bluetooth.nix
+    ../../modules/network/casting.nix
     ../../modules/desktop/niri.nix
     ../../modules/desktop/dms.nix
     ../../modules/desktop/portals.nix
