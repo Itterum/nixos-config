@@ -27,9 +27,7 @@
 
   environment.systemPackages = with pkgs; [
     git
-    helix
     foot
-    greetd
     ghostty
     keepassxc
     nautilus
