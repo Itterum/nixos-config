@@ -54,7 +54,6 @@
         dark = "Catppuccin Mocha Default Background";
         light = "Catppuccin Mocha Default Background";
       };
-      hour_format = "hour24";
       terminal = {
         shell = "system";
         font_family = "FiraCode Nerd Font Mono";
@@ -92,33 +91,6 @@
         "bindings" = {
           "shift shift" = "file_finder::Toggle";
         };
-      }
-    ];
-
-    userDebug = [
-      {
-        label = "Debug active TS file (tsx)";
-        adapter = "JavaScript";
-        type = "node";
-        request = "launch";
-        program = "$ZED_FILE";
-        runtimeExecutable = "npx";
-        runtimeArgs = [ "tsx" ];
-        cwd = "$ZED_WORKTREE_ROOT";
-        skipFiles = [ "<node_internals>/**" ];
-        sourceMaps = true;
-        resolveSourceMapLocations = [
-          "**"
-          "!**/node_modules/**"
-        ];
-      }
-      {
-        label = "Debug active JS file (node)";
-        adapter = "JavaScript";
-        program = "$ZED_FILE";
-        request = "launch";
-        cwd = "$ZED_WORKTREE_ROOT";
-        type = "node";
       }
     ];
   };

@@ -1,4 +1,5 @@
 { pkgs, ... }:
+
 {
   programs.ghostty = {
     enable = true;
@@ -6,7 +7,6 @@
 
     enableZshIntegration = true;
 
-    # Terminal settings
     settings = {
       theme = "Catppuccin Mocha";
       font-family = "FiraCode Nerd Font";
