@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cursorName = "macOS";
@@ -12,6 +17,11 @@ let
   };
 in
 {
+  home.activation.installNiriConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "${config.xdg.configHome}/niri"
+    run install -m 0644 "${./files/niri/config.kdl}" "${config.xdg.configHome}/niri/config.kdl"
+  '';
+
   home.pointerCursor = {
     package = pkgs.apple-cursor;
     name = cursorName;
