@@ -50,8 +50,6 @@
 
   environment.systemPackages = with pkgs; [
     git
-    foot
-    ghostty
     keepassxc
     nautilus
     fastfetch

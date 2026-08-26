@@ -4,7 +4,9 @@
   imports = [
     ./desktop.nix
     ./shell.nix
+    ../../modules/programs/ghostty.nix
     ../../modules/programs/helix.nix
+    ../../modules/programs/zed.nix
   ];
 
   home.username = "itterum";
