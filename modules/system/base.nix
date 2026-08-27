@@ -21,7 +21,6 @@
     timeout = 15;
   };
 
-  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Minsk";
@@ -55,14 +54,13 @@
     fastfetch
     btop
     wireguard-tools
+    telegram-desktop
   ];
 
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
   ];
 
-  services.tlp.enable = true;
-  services.power-profiles-daemon.enable = false;
   services.udisks2.enable = true;
   services.gvfs.enable = true;
   services.upower.enable = true;

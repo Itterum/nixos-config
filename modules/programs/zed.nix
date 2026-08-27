@@ -42,7 +42,7 @@
         include_warnings = true;
         inline.enabled = true;
       };
-      ui_font_family = "Comic Sans MS";
+      ui_font_family = ".ZedSans";
       ui_font_size = 15.0;
       buffer_font_family = "FiraCode Nerd Font";
       buffer_font_size = 14.0;

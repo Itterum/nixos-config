@@ -22,6 +22,11 @@ in
     run install -m 0644 "${./files/niri/config.kdl}" "${config.xdg.configHome}/niri/config.kdl"
   '';
 
+  home.activation.installDmsSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "${config.xdg.configHome}/DankMaterialShell"
+    run install -m 0644 "${./files/dms/settings.json}" "${config.xdg.configHome}/DankMaterialShell/settings.json"
+  '';
+
   home.pointerCursor = {
     package = pkgs.apple-cursor;
     name = cursorName;

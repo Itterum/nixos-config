@@ -1,5 +1,5 @@
 {
-  description = "Itterum NixOS laptop";
+  description = "Itterum NixOS systems";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -11,21 +11,28 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }: {
-    nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
+  outputs = inputs@{ nixpkgs, home-manager, ... }:
+    let
+      mkSystem = hostModule: nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
 
-      modules = [
-        ./hosts/laptop
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.itterum = import ./home/itterum;
-        }
-      ];
+        modules = [
+          hostModule
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.itterum = import ./home/itterum;
+          }
+        ];
+      };
+    in
+    {
+      nixosConfigurations = {
+        laptop = mkSystem ./hosts/laptop;
+        desktop = mkSystem ./hosts/desktop;
+      };
     };
-  };
 }
