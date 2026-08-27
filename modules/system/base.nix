@@ -54,6 +54,7 @@
     nautilus
     fastfetch
     btop
+    wireguard-tools
   ];
 
   fonts.packages = with pkgs; [
