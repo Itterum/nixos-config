@@ -16,23 +16,26 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }:
+  outputs =
+    inputs@{ nixpkgs, home-manager, ... }:
     let
-      mkSystem = hostModule: nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
+      mkSystem =
+        hostModule:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
 
-        modules = [
-          hostModule
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.itterum = import ./home/itterum;
-          }
-        ];
-      };
+          modules = [
+            hostModule
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.users.itterum = import ./home/itterum;
+            }
+          ];
+        };
     in
     {
       nixosConfigurations = {

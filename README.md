@@ -10,6 +10,20 @@ The flake defines two NixOS hosts:
 Both hosts share Limine and the `Windows Boot Manager` EFI entry. Home Manager
 uses the same user configuration on both systems.
 
+## Repository layout
+
+- `hosts/` contains only host-specific composition and generated hardware data.
+- `profiles/` defines the shared NixOS and Home Manager workstation profiles.
+- `modules/nixos/` contains reusable system, desktop, hardware, network,
+  program and virtualisation modules.
+- `modules/home/` contains reusable desktop, shell and user-program modules.
+  Larger configurations such as Niri and Helix are split into focused files.
+- `home/itterum/` is the user entry point that selects a Home Manager profile.
+- `assets/` contains declaratively installed resources such as wallpapers.
+- `experiments/` contains prototypes that are intentionally not imported by
+  either production profile.
+- `tests/` contains evaluation-based regression checks for both hosts.
+
 ## Checks
 
 ```bash
@@ -61,15 +75,24 @@ real `fileSystems."/"`, `/boot`, storage-related initrd modules, host platform
 and the appropriate AMD or Intel CPU microcode option. Do not copy the laptop
 hardware file because its filesystem and swap UUIDs belong to another machine.
 
-The RTX 5060 configuration lives only in `modules/hardware/nvidia.nix`. PRIME
-is intentionally absent because this desktop has no hybrid graphics. GPU access
-inside Podman containers is also not enabled; add
+The RTX 5060 configuration lives only in
+`modules/nixos/hardware/nvidia.nix`. PRIME is intentionally absent because this
+desktop has no hybrid graphics. GPU access inside Podman containers is also not
+enabled; add
 `hardware.nvidia-container-toolkit.enable = true` only if CUDA/container GPU
 workloads are needed.
 
-## Mutable desktop settings
+## Declarative desktop settings
 
-Home Manager copies the repository versions of Niri and DMS settings into the
-active configuration during activation. They remain normal writable files, so
-Niri and DMS can update them during a session. A later rebuild restores the
-repository version; copy wanted UI changes back into the repository first.
+Niri is configured entirely through `programs.niri.settings`; there is no
+maintained `config.kdl` in the repository. The Nix modules under
+`modules/home/desktop/niri/` generate and validate the final KDL configuration.
+
+Wayle is the active desktop shell and notification provider. Its wallpaper is
+installed from `assets/wallpapers/nix-wallpaper.png` into the user's managed
+Home Manager files. Mako and DMS are disabled, and no DMS configuration assets
+are kept in the active user configuration.
+
+The QML prototype under `experiments/itterum-shell/` is deliberately
+disconnected from the flake. Moving an idea into production requires an
+explicit import from a profile or one of its modules.
