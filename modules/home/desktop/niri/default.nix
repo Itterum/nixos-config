@@ -1,12 +1,29 @@
 {
-  config,
-  lib,
+  inputs,
+  osConfig,
   ...
 }:
 
 {
-  home.activation.installNiriConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run mkdir -p "${config.xdg.configHome}/niri"
-    run install -m 0644 "${../../../../home/itterum/files/niri/config.kdl}" "${config.xdg.configHome}/niri/config.kdl"
-  '';
+  imports = [
+    inputs.niri-flake.homeModules.config
+    ./input.nix
+    ./outputs.nix
+    ./appearance.nix
+    ./animations.nix
+    ./rules.nix
+    ./binds
+  ];
+
+  programs.niri = {
+    package = osConfig.programs.niri.package;
+    settings = {
+      config-notification.disable-failed = true;
+      hotkey-overlay.skip-at-startup = true;
+      environment.XDG_CURRENT_DESKTOP = "niri";
+      screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
+      prefer-no-csd = true;
+      debug.honor-xdg-activation-with-invalid-serial = [ ];
+    };
+  };
 }

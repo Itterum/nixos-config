@@ -1,0 +1,33 @@
+{ ... }:
+
+{
+  programs.niri.settings.binds = {
+    "Mod+Space" = {
+      hotkey-overlay.title = "Application Launcher";
+      action.spawn = "fuzzel";
+    };
+    "Mod+Alt+L" = {
+      hotkey-overlay.title = "Lock Screen";
+      action.spawn = [
+        "swaylock"
+        "-f"
+      ];
+    };
+    "Mod+M" = {
+      hotkey-overlay.title = "Task Manager";
+      action.spawn = [
+        "ghostty"
+        "-e"
+        "btop"
+      ];
+    };
+    "Mod+T" = {
+      hotkey-overlay.title = "Open Terminal";
+      action.spawn = "ghostty";
+    };
+    "Super+Return" = {
+      hotkey-overlay.title = "Open Terminal";
+      action.spawn = "ghostty";
+    };
+  };
+}
