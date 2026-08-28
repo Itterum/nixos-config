@@ -172,6 +172,12 @@ brightnessctl remain. Bindings that invoke `makoctl` are removed because Wayle
 owns notifications and no compatible Wayle dismissal CLI is part of the pinned
 configuration. Other existing behavior is preserved.
 
+The pinned niri-flake settings schema does not expose Niri's `recent-windows`
+section. Niri therefore uses its built-in recent-window defaults. The current
+custom highlight colors and output-scoped Alt+Tab override are intentionally
+not migrated; using the defaults keeps the rest of the configuration typed and
+avoids replacing `programs.niri.settings` with an untyped KDL document.
+
 ## Wayle, notifications, and wallpaper
 
 `modules/home/desktop/wayle.nix` enables `services.wayle` with its existing bar,
