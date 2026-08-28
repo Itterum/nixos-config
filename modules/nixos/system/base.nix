@@ -35,11 +35,14 @@
   users.users.itterum = {
     isNormalUser = true;
     description = "itterum";
+    shell = pkgs.zsh;
     extraGroups = [
       "networkmanager"
       "wheel"
     ];
   };
+
+  programs.zsh.enable = true;
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -55,6 +58,9 @@
     btop
     wireguard-tools
     telegram-desktop
+    papirus-icon-theme
+    distrobox
+    obsidian
   ];
 
   fonts.packages = with pkgs; [

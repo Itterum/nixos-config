@@ -3,8 +3,8 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/profiles/workstation.nix
-    ../../modules/hardware/nvidia.nix
+    ../../profiles/nixos/workstation.nix
+    ../../modules/nixos/hardware/nvidia.nix
   ];
 
   networking.hostName = "desktop";

@@ -12,13 +12,12 @@
       "nix"
       "toml"
       "qml"
+      "JetBrains Themes"
     ];
-    extraPackages = [ pkgs.nixd ];
-
-    themes = {
-      catppuccin-system = ./zed/themes/catppuccin-system.json;
-      noctalia = ./zed/themes/noctalia.json;
-    };
+    extraPackages = with pkgs; [
+      nixd
+      qt6.qtdeclarative
+    ];
 
     userSettings = {
       window_decorations = "server";
@@ -42,6 +41,7 @@
         include_warnings = true;
         inline.enabled = true;
       };
+      languages.Nix.language_servers = [ "nixd" ];
       ui_font_family = ".ZedSans";
       ui_font_size = 15.0;
       buffer_font_family = "FiraCode Nerd Font";
@@ -51,8 +51,8 @@
       base_keymap = "JetBrains";
       theme = {
         mode = "system";
-        dark = "Catppuccin Mocha Default Background";
-        light = "Catppuccin Mocha Default Background";
+        dark = "JetBrains Islands Dark";
+        light = "JetBrains Islands Light";
       };
       terminal = {
         shell = "system";

@@ -3,7 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/profiles/workstation.nix
+    ../../profiles/nixos/workstation.nix
   ];
 
   networking.hostName = "nixos";

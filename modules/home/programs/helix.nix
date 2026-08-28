@@ -181,6 +181,38 @@
           command = "${pkgs.csharp-ls}/bin/csharp-ls";
         };
 
+        # QML / Quickshell
+        qmlls = {
+          command = "${pkgs.qt6.qtdeclarative}/bin/qmlls";
+        };
+
+        # JSON
+        vscode-json-language-server = {
+          command = "${pkgs.vscode-langservers-extracted}/bin/vscode-json-language-server";
+          args = [ "--stdio" ];
+        };
+
+        # TOML
+        taplo = {
+          command = "${pkgs.taplo}/bin/taplo";
+          args = [
+            "lsp"
+            "stdio"
+          ];
+        };
+
+        # Markdown
+        marksman = {
+          command = "${pkgs.marksman}/bin/marksman";
+          args = [ "server" ];
+        };
+
+        # Bash
+        bash-language-server = {
+          command = "${pkgs.bash-language-server}/bin/bash-language-server";
+          args = [ "start" ];
+        };
+
         # Nix
         nixd = {
           command = "${pkgs.nixd}/bin/nixd";
@@ -333,6 +365,49 @@
 
           auto-format = true;
         }
+
+        # QML / Quickshell
+        {
+          name = "qml";
+          language-servers = [ "qmlls" ];
+        }
+
+        # JSON
+        {
+          name = "json";
+          language-servers = [ "vscode-json-language-server" ];
+        }
+
+        # TOML
+        {
+          name = "toml";
+          language-servers = [ "taplo" ];
+        }
+
+        # Markdown
+        {
+          name = "markdown";
+          language-servers = [ "marksman" ];
+        }
+
+        # Bash
+        {
+          name = "bash";
+          language-servers = [ "bash-language-server" ];
+        }
+
+        # KDL has no LSP in nixpkgs, but Helix supports formatting it.
+        {
+          name = "kdl";
+          formatter = {
+            command = "${pkgs.kdlfmt}/bin/kdlfmt";
+            args = [
+              "format"
+              "-"
+            ];
+          };
+          auto-format = true;
+        }
       ];
     };
 
@@ -365,6 +440,18 @@
       # Nix
       nixd
       nixfmt
+
+      # QML / Quickshell
+      qt6.qtdeclarative
+
+      # JSON / TOML / Markdown / Bash
+      vscode-langservers-extracted
+      taplo
+      marksman
+      bash-language-server
+
+      # KDL
+      kdlfmt
     ];
   };
 }
