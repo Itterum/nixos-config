@@ -1,6 +1,11 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    ripgrep
+    tree
+  ];
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
