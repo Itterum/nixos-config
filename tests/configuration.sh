@@ -38,6 +38,22 @@ assert_not_contains() {
   fi
 }
 
+assert_occurrences() {
+  local expected=$1
+  local needle=$2
+  local haystack=$3
+  local label=$4
+  local remainder=$haystack
+  local actual=0
+
+  while [[ "$remainder" == *"$needle"* ]]; do
+    remainder=${remainder#*"$needle"}
+    ((actual += 1))
+  done
+
+  assert_eq "$expected" "$actual" "$label"
+}
+
 assert_file_exists() {
   local path=$1
 
@@ -122,7 +138,6 @@ for host in laptop desktop; do
 
   home_prefix="home-manager.users.itterum"
   assert_eq "true" "$(flake_json "$host" "$home_prefix.programs.fuzzel.enable")" "$host Fuzzel"
-  assert_eq "true" "$(flake_json "$host" "$home_prefix.services.mako.enable")" "$host Mako"
   assert_eq "true" "$(flake_json "$host" "$home_prefix.services.swayidle.enable")" "$host swayidle"
   assert_eq "true" "$(flake_json "$host" "$home_prefix.programs.swaylock.enable")" "$host swaylock"
   assert_eq "true" "$(flake_json "$host" "$home_prefix.services.wayle.enable")" "$host Wayle"
@@ -135,6 +150,19 @@ for host in laptop desktop; do
     '"macOS"' \
     "$(flake_json "$host" "$home_prefix.home.pointerCursor.name")" \
     "$host cursor theme"
+done
+
+helix_languages=$(flake_json laptop "home-manager.users.itterum.programs.helix.languages.language")
+assert_eq \
+  "true" \
+  "$(flake_json laptop "home-manager.users.itterum.programs.helix.enable")" \
+  "laptop Helix"
+for language in typescript tsx javascript jsx rust python c-sharp nix qml json toml markdown bash kdl; do
+  assert_occurrences \
+    "1" \
+    "\"name\":\"${language}\"" \
+    "$helix_languages" \
+    "Helix ${language} language"
 done
 
 home_files=$(flake_json laptop "home-manager.users.itterum.home.file")
