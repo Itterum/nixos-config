@@ -13,6 +13,7 @@
     niri-flake = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.niri-unstable.url = "github:wrvsrx/niri/2ab59b90d55afbbe362a63e2a061afe4b524d8c4";
     };
   };
 

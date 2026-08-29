@@ -208,6 +208,10 @@ assert_contains \
   "managed wallpaper"
 
 niri_config=$(flake_value laptop "home-manager.users.itterum.programs.niri.finalConfig")
+assert_contains \
+  "niri-unstable" \
+  "$(flake_value laptop programs.niri.package)" \
+  "Niri build with SHM screencast support"
 assert_eq \
   "true" \
   "$(flake_json laptop "home-manager.users.itterum.xdg.configFile.niri-config.force")" \
@@ -224,6 +228,10 @@ assert_contains \
   "$niri_config" \
   "Niri monitor binding"
 assert_contains 'screenshot-window' "$niri_config" "Niri screenshot binding"
+assert_contains 'Mod+Shift+S' "$niri_config" "Niri Gradia shortcut"
+assert_contains '/bin/gradia-screenshot' "$niri_config" "Niri Gradia screenshot command"
+assert_contains 'Mod+Alt+R' "$niri_config" "Niri Kooha shortcut"
+assert_contains 'spawn "kooha"' "$niri_config" "Niri Kooha command"
 assert_not_contains 'makoctl' "$niri_config" "Niri Mako bindings"
 assert_not_contains 'include "dms/' "$niri_config" "Niri DMS includes"
 

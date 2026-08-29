@@ -8,6 +8,8 @@
 
     limine = {
       enable = true;
+      secureBoot.enable = true;
+      # enrollConfig = true;
 
       maxGenerations = 5;
 
@@ -61,6 +63,9 @@
     papirus-icon-theme
     distrobox
     obsidian
+    kooha
+    gradia
+    sbctl
   ];
 
   fonts.packages = with pkgs; [

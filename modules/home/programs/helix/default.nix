@@ -10,8 +10,8 @@
     enable = true;
     defaultEditor = true;
 
-    themes.catppuccin_mocha_transparent = {
-      inherits = "catppuccin_mocha";
+    themes.transparent_theme = {
+      inherits = "jetbrains_dark";
       "ui.background" = { };
     };
 

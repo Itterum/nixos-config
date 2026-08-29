@@ -1,6 +1,6 @@
 {
   programs.helix.settings = {
-    theme = "catppuccin_mocha_transparent";
+    theme = "transparent_theme";
 
     editor = {
       line-number = "relative";
