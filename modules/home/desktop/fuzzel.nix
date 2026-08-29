@@ -11,7 +11,7 @@ in
         font = "FiraCode Nerd Font:size=14";
         terminal = "ghostty";
         layer = "overlay";
-        prompt = "❯  ";
+        prompt = ":  ";
         icon-theme = "Papirus-Dark";
         icons-enabled = true;
         width = 42;
@@ -37,7 +37,7 @@ in
 
       border = {
         width = 2;
-        radius = 10;
+        radius = 0;
       };
     };
   };

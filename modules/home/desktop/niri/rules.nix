@@ -12,7 +12,7 @@ in
   programs.niri.settings = {
     window-rules = [
       {
-        geometry-corner-radius = radius;
+        # geometry-corner-radius = radius;
         clip-to-geometry = true;
         draw-border-with-background = false;
       }
@@ -79,7 +79,7 @@ in
     layer-rules = [
       {
         matches = [ { namespace = "^launcher$"; } ];
-        geometry-corner-radius = radius;
+        # geometry-corner-radius = radius;
         shadow = {
           enable = true;
           softness = 24;
