@@ -34,6 +34,7 @@ in
               "keyboard-input"
               "clock"
               "notifications"
+              "dashboard"
             ];
             show = true;
           }
