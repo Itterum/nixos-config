@@ -9,8 +9,8 @@
     "Mod+Alt+L" = {
       hotkey-overlay.title = "Lock Screen";
       action.spawn = [
-        "swaylock"
-        "-f"
+        "gtklock"
+        "--daemonize"
       ];
     };
     "Mod+M" = {

@@ -86,6 +86,8 @@ flake_json() {
 
 assert_file_exists "${repo_root}/profiles/nixos/workstation.nix"
 assert_file_exists "${repo_root}/profiles/home/workstation.nix"
+assert_file_exists "${repo_root}/modules/nixos/desktop/greeter.nix"
+assert_file_exists "${repo_root}/modules/nixos/desktop/lock.nix"
 assert_file_exists "${repo_root}/modules/home/desktop/niri/default.nix"
 assert_file_exists "${repo_root}/modules/home/programs/helix/default.nix"
 assert_file_exists "${repo_root}/experiments/itterum-shell/shell.qml"
@@ -128,18 +130,30 @@ for host in laptop desktop; do
     "$host DMS greeter disabled"
   assert_eq "true" "$(flake_json "$host" services.greetd.enable)" "$host greetd"
   assert_eq \
-    "true" \
+    "false" \
     "$(flake_json "$host" services.greetd.useTextGreeter)" \
-    "$host text greeter"
+    "$host graphical greeter"
 
   greetd_command=$(flake_value "$host" services.greetd.settings.default_session.command)
-  assert_contains "tuigreet" "$greetd_command" "$host tuigreet command"
+  assert_contains "cage" "$greetd_command" "$host greeter compositor"
+  assert_contains "gtkgreet" "$greetd_command" "$host gtkgreet command"
   assert_contains "niri-session" "$greetd_command" "$host Niri command"
+  assert_not_contains "tuigreet" "$greetd_command" "$host no tuigreet"
+
+  assert_eq "true" "$(flake_json "$host" programs.gtklock.enable)" "$host gtklock"
+  assert_contains \
+    "nix-wallpaper.png" \
+    "$(flake_value "$host" programs.gtklock.style)" \
+    "$host gtklock wallpaper"
 
   home_prefix="home-manager.users.itterum"
   assert_eq "true" "$(flake_json "$host" "$home_prefix.programs.fuzzel.enable")" "$host Fuzzel"
   assert_eq "true" "$(flake_json "$host" "$home_prefix.services.swayidle.enable")" "$host swayidle"
-  assert_eq "true" "$(flake_json "$host" "$home_prefix.programs.swaylock.enable")" "$host swaylock"
+  assert_contains \
+    "gtklock --daemonize" \
+    "$(flake_value "$host" "$home_prefix.services.swayidle.events.lock")" \
+    "$host swayidle lock command"
+  assert_eq "false" "$(flake_json "$host" "$home_prefix.programs.swaylock.enable")" "$host swaylock disabled"
   assert_eq "true" "$(flake_json "$host" "$home_prefix.services.wayle.enable")" "$host Wayle"
   assert_eq "false" "$(flake_json "$host" "$home_prefix.services.mako.enable")" "$host Mako disabled"
   assert_eq \
@@ -178,7 +192,8 @@ assert_eq \
   "Niri config migration"
 assert_contains 'output "HDMI-A-1"' "$niri_config" "Niri HDMI output"
 assert_contains 'spawn "fuzzel"' "$niri_config" "Niri Fuzzel binding"
-assert_contains 'spawn "swaylock" "-f"' "$niri_config" "Niri swaylock binding"
+assert_contains 'spawn "gtklock" "--daemonize"' "$niri_config" "Niri gtklock binding"
+assert_not_contains 'swaylock' "$niri_config" "Niri swaylock binding removed"
 assert_contains 'focus-workspace 1' "$niri_config" "Niri workspace binding"
 assert_contains \
   'move-column-to-monitor-left' \

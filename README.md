@@ -88,6 +88,10 @@ Niri is configured entirely through `programs.niri.settings`; there is no
 maintained `config.kdl` in the repository. The Nix modules under
 `modules/home/desktop/niri/` generate and validate the final KDL configuration.
 
+Greetd runs the graphical `gtkgreet` greeter inside the Cage Wayland kiosk
+compositor and starts the Niri session after authentication. `gtklock` provides
+the PAM-backed lock screen used by both Niri key bindings and swayidle.
+
 Wayle is the active desktop shell and notification provider. Its wallpaper is
 installed from `assets/wallpapers/nix-wallpaper.png` into the user's managed
 Home Manager files. Mako and DMS are disabled, and no DMS configuration assets
