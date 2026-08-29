@@ -40,6 +40,6 @@ in
     enable = true;
     useTextGreeter = false;
 
-    settings.default_session.command = "${pkgs.cage}/bin/cage -s -m extend -- ${pkgs.gtkgreet}/bin/gtkgreet -l -c ${config.programs.niri.package}/bin/niri-session -s ${style}";
+    settings.default_session.command = "${pkgs.cage}/bin/cage -s -m extend -- ${pkgs.gtkgreet}/bin/gtkgreet -c ${config.programs.niri.package}/bin/niri-session -s ${style}";
   };
 }

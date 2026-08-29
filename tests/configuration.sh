@@ -137,6 +137,7 @@ for host in laptop desktop; do
   greetd_command=$(flake_value "$host" services.greetd.settings.default_session.command)
   assert_contains "cage" "$greetd_command" "$host greeter compositor"
   assert_contains "gtkgreet" "$greetd_command" "$host gtkgreet command"
+  assert_not_contains "gtkgreet -l" "$greetd_command" "$host gtkgreet layer shell"
   assert_contains "niri-session" "$greetd_command" "$host Niri command"
   assert_not_contains "tuigreet" "$greetd_command" "$host no tuigreet"
 
