@@ -89,6 +89,7 @@ assert_file_exists "${repo_root}/profiles/home/workstation.nix"
 assert_file_exists "${repo_root}/modules/nixos/desktop/greeter.nix"
 assert_file_exists "${repo_root}/modules/nixos/desktop/lock.nix"
 assert_file_exists "${repo_root}/modules/home/desktop/niri/default.nix"
+assert_file_exists "${repo_root}/modules/home/desktop/niri/startup.nix"
 assert_file_exists "${repo_root}/modules/home/programs/helix/default.nix"
 assert_file_exists "${repo_root}/experiments/itterum-shell/shell.qml"
 
@@ -130,16 +131,23 @@ for host in laptop desktop; do
     "$host DMS greeter disabled"
   assert_eq "true" "$(flake_json "$host" services.greetd.enable)" "$host greetd"
   assert_eq \
-    "false" \
+    "true" \
     "$(flake_json "$host" services.greetd.useTextGreeter)" \
-    "$host graphical greeter"
+    "$host fallback text greeter"
 
-  greetd_command=$(flake_value "$host" services.greetd.settings.default_session.command)
-  assert_contains "cage" "$greetd_command" "$host greeter compositor"
-  assert_contains "gtkgreet" "$greetd_command" "$host gtkgreet command"
-  assert_not_contains "gtkgreet -l" "$greetd_command" "$host gtkgreet layer shell"
-  assert_contains "niri-session" "$greetd_command" "$host Niri command"
-  assert_not_contains "tuigreet" "$greetd_command" "$host no tuigreet"
+  assert_eq \
+    '"itterum"' \
+    "$(flake_json "$host" services.greetd.settings.initial_session.user)" \
+    "$host autologin user"
+  assert_eq "false" "$(flake_json "$host" services.greetd.restart)" "$host autologin restart"
+  autologin_command=$(flake_value "$host" services.greetd.settings.initial_session.command)
+  assert_contains "niri-session" "$autologin_command" "$host autologin Niri command"
+
+  fallback_command=$(flake_value "$host" services.greetd.settings.default_session.command)
+  assert_contains "tuigreet" "$fallback_command" "$host fallback tuigreet"
+  assert_contains "niri-session" "$fallback_command" "$host fallback Niri command"
+  assert_not_contains "cage" "$fallback_command" "$host no Cage greeter"
+  assert_not_contains "gtkgreet" "$fallback_command" "$host no GTK greeter"
 
   assert_eq "true" "$(flake_json "$host" programs.gtklock.enable)" "$host gtklock"
   assert_contains \
@@ -193,6 +201,8 @@ assert_eq \
   "Niri config migration"
 assert_contains 'output "HDMI-A-1"' "$niri_config" "Niri HDMI output"
 assert_contains 'spawn "fuzzel"' "$niri_config" "Niri Fuzzel binding"
+assert_contains 'spawn-at-startup "/nix/store/' "$niri_config" "Niri startup command"
+assert_contains '/bin/gtklock"' "$niri_config" "Niri startup lock"
 assert_contains 'spawn "gtklock" "--daemonize"' "$niri_config" "Niri gtklock binding"
 assert_not_contains 'swaylock' "$niri_config" "Niri swaylock binding removed"
 assert_contains 'focus-workspace 1' "$niri_config" "Niri workspace binding"
