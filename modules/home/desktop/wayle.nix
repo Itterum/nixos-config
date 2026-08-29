@@ -41,6 +41,11 @@ in
         scale = 0.7;
       };
       modules = {
+        niri-workspaces = {
+          active-indicator = "underline";
+          container-bg-color = "transparent";
+          min-workspace-count = 5;
+        };
         bluetooth.label-show = false;
         clock = {
           icon-show = false;
