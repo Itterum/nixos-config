@@ -43,6 +43,7 @@ in
       modules = {
         bluetooth.label-show = false;
         clock = {
+          icon-show = false;
           dropdown-show-seconds = true;
           format = "%a %b %d %H:%M:%S";
         };
