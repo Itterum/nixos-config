@@ -150,6 +150,19 @@ for host in laptop desktop; do
   assert_not_contains "gtkgreet" "$fallback_command" "$host no GTK greeter"
 
   assert_eq "true" "$(flake_json "$host" programs.gtklock.enable)" "$host gtklock"
+  assert_eq \
+    "true" \
+    "$(flake_json "$host" security.pam.services.gtklock.enableGnomeKeyring)" \
+    "$host gtklock GNOME Keyring"
+  gtklock_pam_source=$(nix build \
+    --no-link \
+    --print-out-paths \
+    "${flake_ref}#nixosConfigurations.${host}.config.environment.etc.\"pam.d/gtklock\".source")
+  gtklock_pam_auth=$(awk '/^# Authentication management\./,/^# Password management\./' "$gtklock_pam_source")
+  assert_contains \
+    "pam_gnome_keyring.so auto_start" \
+    "$gtklock_pam_auth" \
+    "$host gtklock unlocks GNOME Keyring during authentication"
   assert_contains \
     "nix-wallpaper.png" \
     "$(flake_value "$host" programs.gtklock.style)" \

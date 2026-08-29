@@ -30,4 +30,9 @@ in
       }
     '';
   };
+
+  security.pam.services.gtklock = {
+    enableGnomeKeyring = true;
+    rules.auth.gnome_keyring.settings.auto_start = true;
+  };
 }
