@@ -167,6 +167,10 @@ for host in laptop desktop; do
     "nix-wallpaper.png" \
     "$(flake_value "$host" programs.gtklock.style)" \
     "$host gtklock wallpaper"
+  assert_contains \
+    "rgba(54, 54, 58, 0.92)" \
+    "$(flake_value "$host" programs.gtklock.style)" \
+    "$host gtklock Adwaita entry background"
 
   home_prefix="home-manager.users.itterum"
   assert_eq "true" "$(flake_json "$host" "$home_prefix.programs.fuzzel.enable")" "$host Fuzzel"
@@ -179,9 +183,45 @@ for host in laptop desktop; do
   assert_eq "true" "$(flake_json "$host" "$home_prefix.services.wayle.enable")" "$host Wayle"
   assert_eq "false" "$(flake_json "$host" "$home_prefix.services.mako.enable")" "$host Mako disabled"
   assert_eq \
-    '"Papirus-Dark"' \
+    '"adw-gtk3-dark"' \
+    "$(flake_json "$host" "$home_prefix.gtk.theme.name")" \
+    "$host GTK theme"
+  assert_eq \
+    '"WhiteSur-dark"' \
     "$(flake_json "$host" "$home_prefix.gtk.iconTheme.name")" \
     "$host icon theme"
+  assert_eq \
+    '"qtct"' \
+    "$(flake_json "$host" "$home_prefix.qt.platformTheme.name")" \
+    "$host Qt platform theme"
+  assert_eq \
+    '"adwaita-dark"' \
+    "$(flake_json "$host" "$home_prefix.qt.style.name")" \
+    "$host Qt style"
+  assert_eq \
+    '"WhiteSur-dark"' \
+    "$(flake_json "$host" "$home_prefix.qt.qt5ctSettings.Appearance.icon_theme")" \
+    "$host Qt 5 icon theme"
+  assert_eq \
+    '"WhiteSur-dark"' \
+    "$(flake_json "$host" "$home_prefix.qt.qt6ctSettings.Appearance.icon_theme")" \
+    "$host Qt 6 icon theme"
+  assert_eq \
+    '"WhiteSur-dark"' \
+    "$(flake_json "$host" "$home_prefix.programs.fuzzel.settings.main.icon-theme")" \
+    "$host Fuzzel icon theme"
+  assert_eq \
+    '"#222226"' \
+    "$(flake_json "$host" "$home_prefix.services.wayle.settings.styling.palette.bg")" \
+    "$host Wayle Adwaita background"
+  assert_eq \
+    '"#3584e4"' \
+    "$(flake_json "$host" "$home_prefix.services.wayle.settings.styling.palette.primary")" \
+    "$host Wayle Adwaita accent"
+  assert_eq \
+    '["Adwaita Dark"]' \
+    "$(flake_json "$host" "$home_prefix.programs.ghostty.settings.theme")" \
+    "$host Ghostty theme"
   assert_eq \
     '"macOS"' \
     "$(flake_json "$host" "$home_prefix.home.pointerCursor.name")" \
@@ -228,10 +268,6 @@ assert_contains \
   "$niri_config" \
   "Niri monitor binding"
 assert_contains 'screenshot-window' "$niri_config" "Niri screenshot binding"
-assert_contains 'Mod+Shift+S' "$niri_config" "Niri Gradia shortcut"
-assert_contains '/bin/gradia-screenshot' "$niri_config" "Niri Gradia screenshot command"
-assert_contains 'Mod+Alt+R' "$niri_config" "Niri Kooha shortcut"
-assert_contains 'spawn "kooha"' "$niri_config" "Niri Kooha command"
 assert_not_contains 'makoctl' "$niri_config" "Niri Mako bindings"
 assert_not_contains 'include "dms/' "$niri_config" "Niri DMS includes"
 

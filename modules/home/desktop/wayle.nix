@@ -60,11 +60,11 @@ in
       styling = {
         scale = 1;
         palette = {
-          bg = "#${palette.crust}";
-          elevated = "#${palette.base}";
+          bg = "#${palette.base}";
+          elevated = "#${palette.surface0}";
           fg = "#${palette.text}";
           fg-muted = "#${palette.subtext0}";
-          primary = "#${palette.mauve}";
+          primary = "#${palette.accent}";
           surface = "#${palette.mantle}";
           blue = "#${palette.blue}";
           green = "#${palette.green}";

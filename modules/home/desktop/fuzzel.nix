@@ -12,7 +12,7 @@ in
         terminal = "ghostty";
         layer = "overlay";
         prompt = ":  ";
-        icon-theme = "Papirus-Dark";
+        icon-theme = "WhiteSur-dark";
         icons-enabled = true;
         width = 42;
         lines = 12;
@@ -24,15 +24,15 @@ in
       colors = {
         background = "${palette.base}f2";
         text = "${palette.text}ff";
-        prompt = "${palette.mauve}ff";
+        prompt = "${palette.accent}ff";
         placeholder = "${palette.overlay0}ff";
         input = "${palette.text}ff";
-        match = "${palette.mauve}ff";
+        match = "${palette.accent}ff";
         selection = "${palette.surface0}ff";
         selection-text = "${palette.text}ff";
-        selection-match = "${palette.mauve}ff";
+        selection-match = "${palette.accent}ff";
         counter = "${palette.subtext0}ff";
-        border = "${palette.mauve}ff";
+        border = "${palette.accent}ff";
       };
 
       border = {

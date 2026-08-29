@@ -9,7 +9,7 @@ in
     enable = true;
 
     config.main = {
-      gtk-theme = "Adwaita-dark";
+      gtk-theme = "adw-gtk3-dark";
       time-format = "%H:%M";
       date-format = "%A, %d %B";
     };
@@ -23,8 +23,8 @@ in
       }
 
       entry {
-        background-color: rgba(49, 50, 68, 0.92);
-        border: 2px solid #${palette.mauve};
+        background-color: rgba(54, 54, 58, 0.92);
+        border: 2px solid #${palette.accent};
         border-radius: 10px;
         color: #${palette.text};
       }

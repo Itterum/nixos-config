@@ -8,7 +8,7 @@
     enableZshIntegration = true;
 
     settings = {
-      theme = "Catppuccin Mocha";
+      theme = "Adwaita Dark";
       font-family = "FiraCode Nerd Font";
       font-size = 11;
       background-opacity = 0.9;

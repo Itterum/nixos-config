@@ -3,18 +3,8 @@
 let
   cursorName = "macOS";
   cursorSize = 24;
-  gtkThemeName = "catppuccin-mocha-mauve-standard+normal";
-  gtkThemePackage = pkgs.catppuccin-gtk.override {
-    accents = [ "mauve" ];
-    size = "standard";
-    tweaks = [ "normal" ];
-    variant = "mocha";
-  };
-  qtThemeName = "catppuccin-mocha-mauve";
-  qtThemePackage = pkgs.catppuccin-kvantum.override {
-    accent = "mauve";
-    variant = "mocha";
-  };
+  gtkThemeName = "adw-gtk3-dark";
+  iconThemeName = "WhiteSur-dark";
 in
 {
   home.pointerCursor = {
@@ -28,12 +18,12 @@ in
   gtk = {
     enable = true;
     theme = {
-      package = gtkThemePackage;
+      package = pkgs.adw-gtk3;
       name = gtkThemeName;
     };
     iconTheme = {
-      package = pkgs.papirus-icon-theme;
-      name = "Papirus-Dark";
+      package = pkgs.whitesur-icon-theme;
+      name = iconThemeName;
     };
     gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
     gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
@@ -42,21 +32,16 @@ in
   qt = {
     enable = true;
     platformTheme.name = "qtct";
-    style.name = "kvantum";
-    kvantum = {
-      enable = true;
-      themes = [ qtThemePackage ];
-      settings.General.theme = qtThemeName;
-    };
+    style.name = "adwaita-dark";
     qt5ctSettings.Appearance = {
-      icon_theme = "Papirus-Dark";
+      icon_theme = iconThemeName;
       standard_dialogs = "xdgdesktopportal";
-      style = "kvantum";
+      style = "adwaita-dark";
     };
     qt6ctSettings.Appearance = {
-      icon_theme = "Papirus-Dark";
+      icon_theme = iconThemeName;
       standard_dialogs = "xdgdesktopportal";
-      style = "kvantum";
+      style = "adwaita-dark";
     };
   };
 
@@ -68,6 +53,6 @@ in
     cursor-size = cursorSize;
     cursor-theme = cursorName;
     gtk-theme = gtkThemeName;
-    icon-theme = "Papirus-Dark";
+    icon-theme = iconThemeName;
   };
 }

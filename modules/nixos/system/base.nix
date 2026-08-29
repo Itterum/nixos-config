@@ -52,6 +52,7 @@
   ];
   nixpkgs.config.allowUnfree = true;
 
+  programs.nix-ld.enable = true;
   environment.systemPackages = with pkgs; [
     git
     keepassxc
@@ -60,12 +61,12 @@
     btop
     wireguard-tools
     telegram-desktop
-    papirus-icon-theme
     distrobox
     obsidian
     kooha
     gradia
     sbctl
+    uv
   ];
 
   fonts.packages = with pkgs; [

@@ -17,7 +17,7 @@ in
       default-column-width.proportion = 1.0;
       focus-ring = {
         width = 2;
-        active.color = "#${palette.mauve}";
+        active.color = "#${palette.accent}";
         inactive.color = "#${palette.overlay0}";
         urgent.color = "#${palette.red}";
       };
