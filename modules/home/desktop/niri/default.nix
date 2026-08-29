@@ -15,6 +15,8 @@
     ./binds
   ];
 
+  xdg.configFile.niri-config.force = true;
+
   programs.niri = {
     package = osConfig.programs.niri.package;
     settings = {

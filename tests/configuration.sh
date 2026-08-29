@@ -172,6 +172,10 @@ assert_contains \
   "managed wallpaper"
 
 niri_config=$(flake_value laptop "home-manager.users.itterum.programs.niri.finalConfig")
+assert_eq \
+  "true" \
+  "$(flake_json laptop "home-manager.users.itterum.xdg.configFile.niri-config.force")" \
+  "Niri config migration"
 assert_contains 'output "HDMI-A-1"' "$niri_config" "Niri HDMI output"
 assert_contains 'spawn "fuzzel"' "$niri_config" "Niri Fuzzel binding"
 assert_contains 'spawn "swaylock" "-f"' "$niri_config" "Niri swaylock binding"
