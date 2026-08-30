@@ -4,7 +4,7 @@
   programs.niri.settings.binds = {
     "Mod+Space" = {
       hotkey-overlay.title = "Application Launcher";
-      action.spawn = "fuzzel";
+      action.spawn = "anyrun";
     };
     "Mod+Alt+L" = {
       hotkey-overlay.title = "Lock Screen";

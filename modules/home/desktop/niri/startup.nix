@@ -5,5 +5,6 @@
     {
       argv = [ "${osConfig.programs.gtklock.package}/bin/gtklock" ];
     }
+    { argv = [ "anyrun" "daemon" ]; }
   ];
 }
