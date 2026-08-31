@@ -10,11 +10,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    niri-flake = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.niri-unstable.url = "github:wrvsrx/niri/2ab59b90d55afbbe362a63e2a061afe4b524d8c4";
-    };
+    # nixpkgs.follows = "nixos-cosmic/nixpkgs"; # NOTE: change "nixpkgs" to "nixpkgs-stable" to use stable NixOS release
+
+    #     nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
   };
 
   outputs =

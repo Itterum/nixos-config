@@ -1,5 +1,5 @@
 { ... }:
 
 {
-  services.displayManager.defaultSession = "niri";
+  services.displayManager.defaultSession = "cosmic";
 }
