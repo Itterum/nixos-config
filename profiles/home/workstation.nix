@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ../../modules/home/desktop
     ../../modules/home/shell
     ../../modules/home/programs/ghostty.nix
     ../../modules/home/programs/helix
