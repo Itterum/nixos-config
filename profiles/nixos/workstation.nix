@@ -4,7 +4,7 @@
   imports = [
     ../../modules/nixos/system/base.nix
     ../../modules/nixos/desktop/audio.nix
-    ../../modules/nixos/desktop/cosmic.nix
+    ../../modules/nixos/desktop/nixarchy.nix
     ../../modules/nixos/hardware/bluetooth.nix
     ../../modules/nixos/network/casting.nix
     ../../modules/nixos/programs/browsers.nix

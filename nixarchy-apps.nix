@@ -1,0 +1,5 @@
+{ ... }:
+
+{
+  programs.nixarchy.apps = { };
+}
