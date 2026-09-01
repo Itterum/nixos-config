@@ -18,14 +18,14 @@
   programs.nixarchy.apps = {
 
   # ── Service ─────────────────────────────────────────────────────
-    # _1password.enable = true;  #@ _1password  # unfree — Needs the module, not the package: unlocking requires a setuid helper that only programs._1password-gui installs. Set `settings.polkitPolicyOwners = [ "yourname" ]`.
+    # _1password.enable = true;  #@ _1password  # unfree — Needs the module, not the package: unlocking requires a setuid helper that only programs._1password-gui installs. Set `settings.polkitPolicyOwners = [ "yourname" ]`. 
     #   _1password.settings = { };  #@ _1password.settings
     # bitwarden.enable = true;  #@ bitwarden
     # dropbox.enable = true;  #@ dropbox  # unfree
     # nordvpn.enable = true;  #@ nordvpn  # unfree
     # once.enable = true;  #@ once
     # signal.enable = true;  #@ signal
-    spotify.enable = true;  #@ spotify  # unfree
+    # spotify.enable = true;  #@ spotify  # unfree
     # tailscale.enable = true;  #@ tailscale  # A daemon. `settings.useRoutingFeatures = "client"` for exit nodes.
     #   tailscale.settings = { };  #@ tailscale.settings
 
@@ -44,19 +44,19 @@
     # zen.enable = true;  #@ zen
 
   # ── Development ─────────────────────────────────────────────────
-    bun.enable = true;  #@ bun
+    # bun.enable = true;  #@ bun
     # clojure.enable = true;  #@ clojure
     # deno.enable = true;  #@ deno
     # dotnet.enable = true;  #@ dotnet
     # elixir.enable = true;  #@ elixir
     # go.enable = true;  #@ go  # mise use --global go@latest downloads a toolchain outside Nix. This is nixpkgs' go, rebuilt with the system.
     # java.enable = true;  #@ java
-    nodejs.enable = true;  #@ nodejs  # mise' prebuilt Node is dynamically linked against paths NixOS does not have, so it often will not execute at all. This one does.
+    # nodejs.enable = true;  #@ nodejs  # mise' prebuilt Node is dynamically linked against paths NixOS does not have, so it often will not execute at all. This one does.
     # ocaml.enable = true;  #@ ocaml
     # php.enable = true;  #@ php
-    # python.enable = true;  #@ python  # Already on the system as a runtime dependency of Omarchy's own scripts, so this row shows dim on a stock install. Select it to say so in your configuration rather than relying on that.
-    rust.enable = true;  #@ rust  # rustup manages its own toolchains under ~/.rustup, the same as upstream. Use pkgs.cargo and pkgs.rustc instead if you would rather Nix pinned the compiler.
-    scala.enable = true;  #@ scala
+    # python.enable = true;  #@ python  # Already on the system as a runtime dependency of Omarchy's own scripts, so this row shows dim on a stock install. Select it to say so in your configuration rather than relying on that. 
+    # rust.enable = true;  #@ rust  # rustup manages its own toolchains under ~/.rustup, the same as upstream. Use pkgs.cargo and pkgs.rustc instead if you would rather Nix pinned the compiler.
+    # scala.enable = true;  #@ scala
     # symfony.enable = true;  #@ symfony  # unfree
     # zig.enable = true;  #@ zig
 
@@ -80,14 +80,14 @@
     # heroic.enable = true;  #@ heroic
     # lutris.enable = true;  #@ lutris
     # minecraft.enable = true;  #@ minecraft
-    # retroarch.enable = true;  #@ retroarch  # Ships 13 free cores. For more -- including snes9x, genesis-plus-gx, mame and dolphin, which nixpkgs marks unfree -- set allowUnfree and override the package:   apps.retroarch.package =     pkgs.retroarch.withCores (c: [ c.snes9x c.mame c.dolphin ]);
+    # retroarch.enable = true;  #@ retroarch  # Ships 13 free cores. For more -- including snes9x, genesis-plus-gx, mame and dolphin, which nixpkgs marks unfree -- set allowUnfree and override the package:   apps.retroarch.package =     pkgs.retroarch.withCores (c: [ c.snes9x c.mame c.dolphin ]); 
     # steam.enable = true;  #@ steam  # unfree — A module, not a package: Steam needs an FHS wrapper to run at all.
     #   steam.settings = { };  #@ steam.settings
     # xbox-controllers.enable = true;  #@ xbox-controllers  # A kernel driver, so it is a hardware option rather than a package.
     #   xbox-controllers.settings = { };  #@ xbox-controllers.settings
 
   # ── Preinstalls ─────────────────────────────────────────────────
-    # obsidian.enable = true;  #@ obsidian  # unfree — Preinstalled upstream, opt-in here because it is unfree. Theme syncing needs the Omarchy theme selected under Appearance > Themes in the app; omarchy-theme-set-obsidian writes it on every theme change.
+    # obsidian.enable = true;  #@ obsidian  # unfree — Preinstalled upstream, opt-in here because it is unfree. Theme syncing needs the Omarchy theme selected under Appearance > Themes in the app; omarchy-theme-set-obsidian writes it on every theme change. 
 
   # ── Utility ─────────────────────────────────────────────────────
     # omacalc.enable = true;  #@ omacalc

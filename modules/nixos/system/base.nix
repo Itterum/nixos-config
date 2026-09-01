@@ -8,8 +8,12 @@
 
     limine = {
       enable = true;
-      secureBoot.enable = true;
-      # enrollConfig = true;
+      efiSupport = true;
+      secureBoot = {
+        enable = true;
+        autoGenerateKeys = true;
+        autoEnrollKeys.enable = true;
+      };
 
       maxGenerations = 5;
 
