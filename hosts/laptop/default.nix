@@ -8,6 +8,12 @@
 
   networking.hostName = "nixos";
 
-  services.tlp.enable = true;
-  services.power-profiles-daemon.enable = false;
+  services = {
+    tlp = {
+      enable = true;
+      pd.enable = true;
+    };
+
+    power-profiles-daemon.enable = false;
+  };
 }

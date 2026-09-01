@@ -4,8 +4,8 @@ The flake defines two NixOS hosts:
 
 | Host | Hostname | Power profile | Graphics |
 | --- | --- | --- | --- |
-| `laptop` | `nixos` | TLP | default/iGPU drivers |
-| `desktop` | `desktop` | default desktop policy | NVIDIA RTX 5060, open kernel module |
+| `laptop` | `nixos` | TLP with its power-profiles interface | default/iGPU drivers |
+| `desktop` | `desktop` | power-profiles-daemon | NVIDIA RTX 5060, open kernel module |
 
 Both hosts share Limine and the `Windows Boot Manager` EFI entry. Home Manager
 uses the same user configuration on both systems.
@@ -16,18 +16,15 @@ uses the same user configuration on both systems.
 - `profiles/` defines the shared NixOS and Home Manager workstation profiles.
 - `modules/nixos/` contains reusable system, desktop, hardware, network,
   program and virtualisation modules.
-- `modules/home/` contains reusable desktop, shell and user-program modules.
-  Larger configurations such as Niri and Helix are split into focused files.
+- `modules/home/` contains reusable shell and user-program modules. Larger
+  configurations such as Helix are split into focused files.
 - `home/itterum/` is the user entry point that selects a Home Manager profile.
-- `assets/` contains declaratively installed resources such as wallpapers.
-- `experiments/` contains prototypes that are intentionally not imported by
-  either production profile.
-- `tests/` contains evaluation-based regression checks for both hosts.
+- `assets/` contains repository resources such as wallpapers; a module must
+  reference an asset before Nix installs it.
 
 ## Checks
 
 ```bash
-bash tests/configuration.sh
 nix flake check path:. --no-build
 nix build --no-link 'path:.#nixosConfigurations.laptop.config.system.build.toplevel'
 nix build --no-link 'path:.#nixosConfigurations.desktop.config.system.build.toplevel'
@@ -67,8 +64,12 @@ sudo nixos-enter --root /mnt -c 'passwd itterum'
 
 The last command sets the login password for the declaratively created user;
 the configuration intentionally does not store a plaintext or hashed password
-in Git. Disable Secure Boot for the initial installation unless you separately
-configure a signed-boot solution such as Lanzaboote.
+in Git.
+
+Limine Secure Boot is enabled for both hosts. The target system must already
+have sbctl keys under `/var/lib/sbctl`; otherwise bootloader installation stops
+before writing an unsigned EFI binary. Preserve the enrolled desktop keys when
+reinstalling and verify them with `sbctl status` before the first rebuild.
 
 Inspect the generated file before installation. It must contain at least the
 real `fileSystems."/"`, `/boot`, storage-related initrd modules, host platform
@@ -82,22 +83,17 @@ enabled; add
 `hardware.nvidia-container-toolkit.enable = true` only if CUDA/container GPU
 workloads are needed.
 
-## Declarative desktop settings
+## COSMIC desktop
 
-Niri is configured entirely through `programs.niri.settings`; there is no
-maintained `config.kdl` in the repository. The Nix modules under
-`modules/home/desktop/niri/` generate and validate the final KDL configuration.
+The native NixOS COSMIC module provides the desktop, Xwayland support, portals
+and the `cosmic-greeter` login screen. `system76-scheduler` is enabled for its
+process-priority rules; it does not require System76 hardware. The
+`system76-power` hardware daemon is intentionally not enabled.
 
-Greetd automatically starts the Niri session for `itterum`, and Niri immediately
-launches the PAM-backed `gtklock` lock screen. If the initial Niri session exits,
-greetd falls back to the text-based `tuigreet` login instead of repeating the
-automatic login.
+On the laptop, TLP manages power and `tlp-pd` exposes the power-profiles API
+used by COSMIC, while the standalone `power-profiles-daemon` remains disabled
+to avoid a conflict. The desktop uses the standalone daemon selected by the
+COSMIC NixOS module.
 
-Wayle is the active desktop shell and notification provider. Its wallpaper is
-installed from `assets/wallpapers/nix-wallpaper.png` into the user's managed
-Home Manager files. Mako and DMS are disabled, and no DMS configuration assets
-are kept in the active user configuration.
-
-The QML prototype under `experiments/itterum-shell/` is deliberately
-disconnected from the flake. Moving an idea into production requires an
-explicit import from a profile or one of its modules.
+COSMIC user preferences are currently mutable state under `~/.config/cosmic`;
+Home Manager does not yet manage them in this repository.
