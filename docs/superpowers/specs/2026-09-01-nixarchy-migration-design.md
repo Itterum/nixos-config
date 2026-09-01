@@ -19,7 +19,7 @@ branch restores the COSMIC composition without reverting Nixarchy commits.
 
 ## Flake integration
 
-Add Nixarchy as a flake input pinned to release `v4.0.1-1` rather than its moving
+Add Nixarchy as a flake input pinned to release `v4.0.1-2` rather than its moving
 `main` branch. Import its NixOS module into both configurations through the
 shared system composition, and import its Home Manager module for the `itterum`
 user through the shared home composition.
