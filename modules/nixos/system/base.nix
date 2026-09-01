@@ -56,7 +56,7 @@
   environment.systemPackages = with pkgs; [
     git
     keepassxc
-    nautilus
+    localsend
     fastfetch
     btop
     wireguard-tools

@@ -39,9 +39,8 @@
     in
     {
       nixosConfigurations = rec {
-        laptop = mkSystem ./hosts/laptop;
-        nixos = laptop;
         desktop = mkSystem ./hosts/desktop;
+        nixos = desktop;
       };
     };
 }

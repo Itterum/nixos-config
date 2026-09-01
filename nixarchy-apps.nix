@@ -54,14 +54,14 @@
     nodejs.enable = true;  #@ nodejs  # mise' prebuilt Node is dynamically linked against paths NixOS does not have, so it often will not execute at all. This one does.
     # ocaml.enable = true;  #@ ocaml
     # php.enable = true;  #@ php
-    python.enable = true;  #@ python  # Already on the system as a runtime dependency of Omarchy's own scripts, so this row shows dim on a stock install. Select it to say so in your configuration rather than relying on that.
+    # python.enable = true;  #@ python  # Already on the system as a runtime dependency of Omarchy's own scripts, so this row shows dim on a stock install. Select it to say so in your configuration rather than relying on that.
     rust.enable = true;  #@ rust  # rustup manages its own toolchains under ~/.rustup, the same as upstream. Use pkgs.cargo and pkgs.rustc instead if you would rather Nix pinned the compiler.
     scala.enable = true;  #@ scala
     # symfony.enable = true;  #@ symfony  # unfree
     # zig.enable = true;  #@ zig
 
   # ── AI ──────────────────────────────────────────────────────────
-    chatgpt.enable = true;  #@ chatgpt  # unfree
+    # chatgpt.enable = true;  #@ chatgpt  # unfree
     # dictation.enable = true;  #@ dictation
     # grok-bot.enable = true;  #@ grok-bot  # unfree
     # hey-cli.enable = true;  #@ hey-cli
