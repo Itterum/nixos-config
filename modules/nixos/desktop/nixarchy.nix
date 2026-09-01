@@ -14,4 +14,6 @@
     browserThemeUser = null;
     binaryCaches = true;
   };
+
+  services.system76-scheduler.enable = true;
 }
