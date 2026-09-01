@@ -96,5 +96,5 @@ bootstrap hardware configuration. Any other evaluation or build failure blocks
 completion and must be corrected without switching the running system.
 
 After the user activates the configuration and logs into the Nixarchy session,
-the user can run `nix run github:olafkfreund/nixarchy#verify` to inspect runtime
+the user can run `nix run github:olafkfreund/nixarchy/v4.0.1-2#verify` to inspect runtime
 graphics, Bluetooth, theme, and shell integration.
