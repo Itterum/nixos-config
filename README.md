@@ -25,7 +25,7 @@ uses the same user configuration on both systems.
 ## Checks
 
 ```bash
-nix flake check path:. --no-build
+nix flake check path:.
 nix build --no-link 'path:.#nixosConfigurations.laptop.config.system.build.toplevel'
 nix build --no-link 'path:.#nixosConfigurations.desktop.config.system.build.toplevel'
 ```
@@ -57,7 +57,7 @@ sudo install -m 0644 \
   "$config_repo/hosts/desktop/hardware-configuration.nix"
 
 cd "$config_repo"
-nix flake check path:. --no-build
+nix flake check path:.
 sudo nixos-install --flake 'path:.#desktop'
 sudo nixos-enter --root /mnt -c 'passwd itterum'
 ```
@@ -83,17 +83,24 @@ enabled; add
 `hardware.nvidia-container-toolkit.enable = true` only if CUDA/container GPU
 workloads are needed.
 
-## COSMIC desktop
+## Nixarchy desktop
 
-The native NixOS COSMIC module provides the desktop, Xwayland support, portals
-and the `cosmic-greeter` login screen. `system76-scheduler` is enabled for its
-process-priority rules; it does not require System76 hardware. The
-`system76-power` hardware daemon is intentionally not enabled.
+This `nixarchy` branch uses Nixarchy and SDDM on both hosts while retaining all
+existing applications and user configuration. The Nixarchy module imports
+`nixarchy-apps.nix` for menu selections.
 
-On the laptop, TLP manages power and `tlp-pd` exposes the power-profiles API
-used by COSMIC, while the standalone `power-profiles-daemon` remains disabled
-to avoid a conflict. The desktop uses the standalone daemon selected by the
-COSMIC NixOS module.
+Queue applications through the Nixarchy menu, then apply the queued selections
+with:
 
-COSMIC user preferences are currently mutable state under `~/.config/cosmic`;
-Home Manager does not yet manage them in this repository.
+```bash
+nixarchy apply
+```
+
+After activating a configuration, perform a runtime check with:
+
+```bash
+nix run github:olafkfreund/nixarchy/v4.0.1-2#verify
+```
+
+Switch to the `cosmic` branch and rebuild the selected host to return to the
+preserved desktop configuration.

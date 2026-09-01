@@ -246,7 +246,7 @@ Expected: every command succeeds; `rg` prints the new operational documentation.
 - [ ] **Step 3: Run flake evaluation checks**
 
 ```bash
-nix flake check path:. --no-build
+nix flake check path:.
 ```
 
 Expected: PASS for both NixOS configurations. The known desktop bootstrap hardware warning is allowed.

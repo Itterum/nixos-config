@@ -84,7 +84,7 @@ the new desktop. Activation remains an explicit user action after review.
 
 Before declaring the migration ready:
 
-1. Run `nix flake check path:. --no-build`.
+1. Run `nix flake check path:.`.
 2. Build `path:.#nixosConfigurations.laptop.config.system.build.toplevel`
    without creating a result symlink.
 3. Build `path:.#nixosConfigurations.desktop.config.system.build.toplevel`
