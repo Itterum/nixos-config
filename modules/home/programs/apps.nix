@@ -8,5 +8,6 @@
     obsidian
     kooha
     gradia
+    pi-coding-agent
   ];
 }

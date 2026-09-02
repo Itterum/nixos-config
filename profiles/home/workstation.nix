@@ -11,5 +11,7 @@
     ../../modules/home/programs/ghostty.nix
     ../../modules/home/programs/helix
     ../../modules/home/programs/zed.nix
+    # ../../modules/home/programs/pi.nix
+    # ../../modules/home/programs/herdr.nix
   ];
 }
