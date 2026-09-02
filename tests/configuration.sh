@@ -90,28 +90,24 @@ assert_file_exists "${repo_root}/modules/nixos/desktop/greeter.nix"
 assert_file_exists "${repo_root}/modules/home/desktop/noctalia.nix"
 assert_file_exists "${repo_root}/modules/home/desktop/niri/default.nix"
 assert_file_exists "${repo_root}/modules/home/programs/helix/default.nix"
-assert_file_exists "${repo_root}/experiments/itterum-shell/shell.qml"
 
 assert_path_absent "${repo_root}/modules/profiles"
 assert_path_absent "${repo_root}/modules/desktop"
 assert_path_absent "${repo_root}/home/itterum/desktop.nix"
 assert_path_absent "${repo_root}/home/itterum/files/niri/config.kdl"
 assert_path_absent "${repo_root}/experimentals"
+assert_path_absent "${repo_root}/hosts/laptop"
 
-assert_eq "nixos" "$(flake_value laptop networking.hostName)" "laptop hostname"
+assert_eq \
+  '["desktop"]' \
+  "$(nix eval --json "${flake_ref}#nixosConfigurations" --apply builtins.attrNames)" \
+  "flake configurations"
 assert_eq "desktop" "$(flake_value desktop networking.hostName)" "desktop hostname"
 
-assert_eq "true" "$(flake_json laptop boot.loader.limine.enable)" "laptop Limine"
 assert_eq "true" "$(flake_json desktop boot.loader.limine.enable)" "desktop Limine"
-assert_eq "true" "$(flake_json laptop services.tlp.enable)" "laptop TLP"
 assert_eq "false" "$(flake_json desktop services.tlp.enable)" "desktop TLP"
-assert_eq "false" "$(flake_json laptop services.kanata.enable)" "laptop Kanata disabled"
 assert_eq "true" "$(flake_json desktop services.kanata.enable)" "desktop Kanata"
 
-assert_not_contains \
-  '"nvidia"' \
-  "$(flake_json laptop services.xserver.videoDrivers)" \
-  "laptop video drivers"
 assert_contains \
   '"nvidia"' \
   "$(flake_json desktop services.xserver.videoDrivers)" \
@@ -124,7 +120,14 @@ assert_eq \
   "$(flake_value desktop hardware.nvidia.package.version)" \
   "NVIDIA stable package"
 
-for host in laptop desktop; do
+for host in desktop; do
+  for service in flatpak udisks2 gvfs upower; do
+    assert_eq \
+      "true" \
+      "$(flake_json "$host" "services.${service}.enable")" \
+      "$host ${service} service"
+  done
+
   assert_eq \
     '"hm-backup"' \
     "$(flake_json "$host" home-manager.backupFileExtension)" \
@@ -200,6 +203,11 @@ for host in laptop desktop; do
   home_packages=$(flake_json "$host" "$home_prefix.home.packages")
   assert_contains "playerctl" "$home_packages" "$host Niri media binding dependency"
   assert_contains "brightnessctl" "$home_packages" "$host Niri brightness binding dependency"
+  for package in \
+    brave google-chrome chatgpt codex distrobox \
+    keepassxc nautilus telegram-desktop obsidian kooha gradia; do
+    assert_contains "$package" "$home_packages" "$host $package package"
+  done
   assert_eq \
     '"adw-gtk3-dark"' \
     "$(flake_json "$host" "$home_prefix.gtk.theme.name")" \
@@ -238,24 +246,16 @@ for host in laptop desktop; do
     "$host cursor theme"
 done
 
-assert_eq \
-  "1800" \
-  "$(flake_json laptop "home-manager.users.itterum.programs.noctalia.settings.idle.behavior.suspend.timeout")" \
-  "laptop Noctalia suspend timeout"
-assert_contains \
-  "systemctl suspend" \
-  "$(flake_value laptop "home-manager.users.itterum.programs.noctalia.settings.idle.behavior.suspend.command")" \
-  "laptop Noctalia suspend command"
 assert_not_contains \
   '"suspend"' \
   "$(flake_json desktop "home-manager.users.itterum.programs.noctalia.settings.idle.behavior")" \
   "desktop Noctalia suspend disabled"
 
-helix_languages=$(flake_json laptop "home-manager.users.itterum.programs.helix.languages.language")
+helix_languages=$(flake_json desktop "home-manager.users.itterum.programs.helix.languages.language")
 assert_eq \
   "true" \
-  "$(flake_json laptop "home-manager.users.itterum.programs.helix.enable")" \
-  "laptop Helix"
+  "$(flake_json desktop "home-manager.users.itterum.programs.helix.enable")" \
+  "desktop Helix"
 for language in typescript tsx javascript jsx rust python c-sharp nix qml json toml markdown bash kdl; do
   assert_occurrences \
     "1" \
@@ -264,22 +264,22 @@ for language in typescript tsx javascript jsx rust python c-sharp nix qml json t
     "Helix ${language} language"
 done
 
-home_files=$(flake_json laptop "home-manager.users.itterum.home.file")
+home_files=$(flake_json desktop "home-manager.users.itterum.home.file")
 assert_contains \
   'Pictures/Wallpapers/nix-wallpaper.png' \
   "$home_files" \
   "managed wallpaper"
 
-niri_config=$(flake_value laptop "home-manager.users.itterum.programs.niri.finalConfig")
+niri_config=$(flake_value desktop "home-manager.users.itterum.programs.niri.finalConfig")
 assert_contains \
   "niri-unstable" \
-  "$(flake_value laptop programs.niri.package)" \
+  "$(flake_value desktop programs.niri.package)" \
   "Niri build with SHM screencast support"
 assert_eq \
   "true" \
-  "$(flake_json laptop "home-manager.users.itterum.xdg.configFile.niri-config.force")" \
+  "$(flake_json desktop "home-manager.users.itterum.xdg.configFile.niri-config.force")" \
   "Niri config migration"
-assert_contains 'output "HDMI-A-1"' "$niri_config" "Niri HDMI output"
+assert_contains 'output "DP-1"' "$niri_config" "Niri desktop output"
 assert_contains \
   'spawn "noctalia" "msg" "panel-toggle" "launcher"' \
   "$niri_config" \

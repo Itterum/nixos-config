@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    brave
-    google-chrome
+    sbctl
+    wireguard-tools
   ];
 }

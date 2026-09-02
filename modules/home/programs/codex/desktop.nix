@@ -1,7 +1,7 @@
 { inputs, pkgs, ... }:
 
 {
-  environment.systemPackages = [
+  home.packages = [
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.chatgpt
   ];
 }

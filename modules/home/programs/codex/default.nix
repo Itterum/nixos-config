@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./zsh.nix
-    ./tools.nix
+    ./cli.nix
+    ./desktop.nix
   ];
 }

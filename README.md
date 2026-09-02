@@ -1,14 +1,13 @@
 # itterum NixOS configuration
 
-The flake defines two NixOS hosts:
+The flake defines one NixOS host:
 
 | Host | Hostname | Power profile | Graphics |
 | --- | --- | --- | --- |
-| `laptop` | `nixos` | TLP | default/iGPU drivers |
 | `desktop` | `desktop` | default desktop policy | NVIDIA RTX 5060, open kernel module |
 
-Both hosts share Limine and the `Windows Boot Manager` EFI entry. Home Manager
-uses the same user configuration on both systems.
+The desktop uses Limine with the `Windows Boot Manager` EFI entry. Home Manager
+configures the `itterum` user.
 
 ## Repository layout
 
@@ -20,16 +19,13 @@ uses the same user configuration on both systems.
   Larger configurations such as Niri and Helix are split into focused files.
 - `home/itterum/` is the user entry point that selects a Home Manager profile.
 - `assets/` contains declaratively installed resources such as wallpapers.
-- `experiments/` contains prototypes that are intentionally not imported by
-  either production profile.
-- `tests/` contains evaluation-based regression checks for both hosts.
+- `tests/` contains evaluation-based regression checks for the desktop host.
 
 ## Checks
 
 ```bash
 bash tests/configuration.sh
 nix flake check path:. --no-build
-nix build --no-link 'path:.#nixosConfigurations.laptop.config.system.build.toplevel'
 nix build --no-link 'path:.#nixosConfigurations.desktop.config.system.build.toplevel'
 ```
 
@@ -46,7 +42,7 @@ replaced.
 
 From the NixOS installer, first partition the disks and mount the target root at
 `/mnt`. Mount the EFI system partition at `/mnt/boot`; this is required by the
-shared Limine configuration. Then generate the hardware scan into a temporary
+desktop Limine configuration. Then generate the hardware scan into a temporary
 directory and replace the bootstrap file:
 
 ```bash
@@ -72,8 +68,8 @@ configure a signed-boot solution such as Lanzaboote.
 
 Inspect the generated file before installation. It must contain at least the
 real `fileSystems."/"`, `/boot`, storage-related initrd modules, host platform
-and the appropriate AMD or Intel CPU microcode option. Do not copy the laptop
-hardware file because its filesystem and swap UUIDs belong to another machine.
+and the appropriate AMD or Intel CPU microcode option. Do not reuse a hardware
+scan from another machine because its filesystem and swap UUIDs will differ.
 
 The RTX 5060 configuration lives only in
 `modules/nixos/hardware/nvidia.nix`. PRIME is intentionally absent because this
@@ -98,7 +94,3 @@ systemd user service, and Niri key bindings control it through `noctalia msg`.
 The wallpaper is installed from `assets/wallpapers/nix-wallpaper.png` into the
 user's managed Home Manager files. Wayle, AnyRun, Fuzzel, swayidle, gtklock,
 Mako and DMS are disabled.
-
-The QML prototype under `experiments/itterum-shell/` is deliberately
-disconnected from the flake. Moving an idea into production requires an
-explicit import from a profile or one of its modules.

@@ -52,7 +52,6 @@
     in
     {
       nixosConfigurations = {
-        laptop = mkSystem ./hosts/laptop;
         desktop = mkSystem ./hosts/desktop;
       };
     };

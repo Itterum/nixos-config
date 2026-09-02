@@ -12,10 +12,13 @@
       "nix"
       "toml"
       "qml"
-      "JetBrains Themes"
+      "jetbrains-themes"
+      "dockerfile"
+      "lua"
     ];
     extraPackages = with pkgs; [
       nixd
+      nixfmt
       qt6.qtdeclarative
     ];
 
@@ -41,7 +44,14 @@
         include_warnings = true;
         inline.enabled = true;
       };
-      languages.Nix.language_servers = [ "nixd" ];
+      languages.Nix = {
+        language_servers = [ "nixd" ];
+        formatter = "language_server";
+        format_on_save = "on";
+      };
+      lsp.nixd.settings.nixd = {
+        formatting.command = [ "nixfmt" ];
+      };
       ui_font_family = ".ZedSans";
       ui_font_size = 15.0;
       buffer_font_family = "FiraCode Nerd Font";
@@ -49,6 +59,7 @@
       helix_mode = true;
       vim_mode = false;
       base_keymap = "JetBrains";
+      colorize_brackets = true;
       theme = {
         mode = "system";
         dark = "JetBrains Islands Dark";
