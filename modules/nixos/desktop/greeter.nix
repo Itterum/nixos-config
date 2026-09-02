@@ -28,6 +28,7 @@
 
   services.greetd = {
     useTextGreeter = false;
+    settings.default_session.command = "/run/current-system/sw/bin/noctalia-greeter-session";
     settings.default_session.user = "greeter";
   };
 }

@@ -179,6 +179,10 @@ for host in laptop desktop; do
     "$host Noctalia theme"
   assert_eq \
     "true" \
+    "$(flake_json "$host" "$home_prefix.programs.noctalia.settings.shell.polkit_agent")" \
+    "$host Noctalia polkit agent"
+  assert_eq \
+    "true" \
     "$(flake_json "$host" "$home_prefix.programs.noctalia.settings.lockscreen.enabled")" \
     "$host Noctalia lock screen"
   assert_eq \

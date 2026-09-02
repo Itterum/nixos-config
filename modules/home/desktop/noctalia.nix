@@ -25,6 +25,7 @@ in
     settings = {
       shell = {
         font_family = "FiraCode Nerd Font";
+        polkit_agent = true;
         settings_show_advanced = true;
       };
 
