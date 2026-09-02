@@ -4,13 +4,20 @@
   programs.niri.settings.binds = {
     "Mod+Space" = {
       hotkey-overlay.title = "Application Launcher";
-      action.spawn = "anyrun";
+      action.spawn = [
+        "noctalia"
+        "msg"
+        "panel-toggle"
+        "launcher"
+      ];
     };
     "Mod+Alt+L" = {
       hotkey-overlay.title = "Lock Screen";
       action.spawn = [
-        "gtklock"
-        "--daemonize"
+        "noctalia"
+        "msg"
+        "session"
+        "lock"
       ];
     };
     "Mod+M" = {

@@ -1,6 +1,11 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    brightnessctl
+    playerctl
+  ];
+
   programs.niri.settings.binds = {
     "XF86AudioLowerVolume" = {
       allow-when-locked = true;

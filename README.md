@@ -88,15 +88,16 @@ Niri is configured entirely through `programs.niri.settings`; there is no
 maintained `config.kdl` in the repository. The Nix modules under
 `modules/home/desktop/niri/` generate and validate the final KDL configuration.
 
-Greetd automatically starts the Niri session for `itterum`, and Niri immediately
-launches the PAM-backed `gtklock` lock screen. If the initial Niri session exits,
-greetd falls back to the text-based `tuigreet` login instead of repeating the
-automatic login.
+Noctalia Greeter is the graphical `greetd` frontend and offers Niri as the
+default session. Automatic login is disabled, so every new graphical session
+starts with authentication in the greeter.
 
-Wayle is the active desktop shell and notification provider. Its wallpaper is
-installed from `assets/wallpapers/nix-wallpaper.png` into the user's managed
-Home Manager files. Mako and DMS are disabled, and no DMS configuration assets
-are kept in the active user configuration.
+Noctalia is the active desktop shell, launcher, notification provider,
+wallpaper engine, lock screen and idle manager. It runs as a Home Manager
+systemd user service, and Niri key bindings control it through `noctalia msg`.
+The wallpaper is installed from `assets/wallpapers/nix-wallpaper.png` into the
+user's managed Home Manager files. Wayle, AnyRun, Fuzzel, swayidle, gtklock,
+Mako and DMS are disabled.
 
 The QML prototype under `experiments/itterum-shell/` is deliberately
 disconnected from the flake. Moving an idea into production requires an

@@ -67,6 +67,9 @@
     gradia
     sbctl
     uv
+    teleport
+    kubectl
+    k9s
   ];
 
   fonts.packages = with pkgs; [

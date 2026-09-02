@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    codex-cli.url = "github:sadjow/codex-cli-nix";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
@@ -14,6 +15,16 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.niri-unstable.url = "github:wrvsrx/niri/2ab59b90d55afbbe362a63e2a061afe4b524d8c4";
+    };
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -30,6 +41,7 @@
             hostModule
             home-manager.nixosModules.home-manager
             {
+              home-manager.backupFileExtension = "hm-backup";
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };

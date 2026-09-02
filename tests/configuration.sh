@@ -87,9 +87,8 @@ flake_json() {
 assert_file_exists "${repo_root}/profiles/nixos/workstation.nix"
 assert_file_exists "${repo_root}/profiles/home/workstation.nix"
 assert_file_exists "${repo_root}/modules/nixos/desktop/greeter.nix"
-assert_file_exists "${repo_root}/modules/nixos/desktop/lock.nix"
+assert_file_exists "${repo_root}/modules/home/desktop/noctalia.nix"
 assert_file_exists "${repo_root}/modules/home/desktop/niri/default.nix"
-assert_file_exists "${repo_root}/modules/home/desktop/niri/startup.nix"
 assert_file_exists "${repo_root}/modules/home/programs/helix/default.nix"
 assert_file_exists "${repo_root}/experiments/itterum-shell/shell.qml"
 
@@ -106,6 +105,8 @@ assert_eq "true" "$(flake_json laptop boot.loader.limine.enable)" "laptop Limine
 assert_eq "true" "$(flake_json desktop boot.loader.limine.enable)" "desktop Limine"
 assert_eq "true" "$(flake_json laptop services.tlp.enable)" "laptop TLP"
 assert_eq "false" "$(flake_json desktop services.tlp.enable)" "desktop TLP"
+assert_eq "false" "$(flake_json laptop services.kanata.enable)" "laptop Kanata disabled"
+assert_eq "true" "$(flake_json desktop services.kanata.enable)" "desktop Kanata"
 
 assert_not_contains \
   '"nvidia"' \
@@ -124,64 +125,77 @@ assert_eq \
   "NVIDIA stable package"
 
 for host in laptop desktop; do
+  assert_eq \
+    '"hm-backup"' \
+    "$(flake_json "$host" home-manager.backupFileExtension)" \
+    "$host Home Manager migration backups"
   assert_eq "false" "$(flake_json "$host" programs.dms-shell.enable)" "$host DMS disabled"
   assert_eq \
     "false" \
     "$(flake_json "$host" services.displayManager.dms-greeter.enable)" \
     "$host DMS greeter disabled"
+  assert_eq \
+    "true" \
+    "$(flake_json "$host" programs.noctalia-greeter.enable)" \
+    "$host Noctalia Greeter"
   assert_eq "true" "$(flake_json "$host" services.greetd.enable)" "$host greetd"
   assert_eq \
-    "true" \
+    "false" \
     "$(flake_json "$host" services.greetd.useTextGreeter)" \
-    "$host fallback text greeter"
+    "$host graphical greeter"
 
+  greetd_settings=$(flake_json "$host" services.greetd.settings)
+  assert_not_contains '"initial_session"' "$greetd_settings" "$host autologin disabled"
+
+  greeter_command=$(flake_value "$host" services.greetd.settings.default_session.command)
+  assert_contains "noctalia-greeter-session" "$greeter_command" "$host Noctalia greeter command"
+  assert_not_contains "tuigreet" "$greeter_command" "$host tuigreet removed"
   assert_eq \
-    '"itterum"' \
-    "$(flake_json "$host" services.greetd.settings.initial_session.user)" \
-    "$host autologin user"
-  assert_eq "false" "$(flake_json "$host" services.greetd.restart)" "$host autologin restart"
-  autologin_command=$(flake_value "$host" services.greetd.settings.initial_session.command)
-  assert_contains "niri-session" "$autologin_command" "$host autologin Niri command"
-
-  fallback_command=$(flake_value "$host" services.greetd.settings.default_session.command)
-  assert_contains "tuigreet" "$fallback_command" "$host fallback tuigreet"
-  assert_contains "niri-session" "$fallback_command" "$host fallback Niri command"
-  assert_not_contains "cage" "$fallback_command" "$host no Cage greeter"
-  assert_not_contains "gtkgreet" "$fallback_command" "$host no GTK greeter"
-
-  assert_eq "true" "$(flake_json "$host" programs.gtklock.enable)" "$host gtklock"
+    '"niri"' \
+    "$(flake_json "$host" programs.noctalia-greeter.settings.session.default)" \
+    "$host greeter default session"
   assert_eq \
-    "true" \
-    "$(flake_json "$host" security.pam.services.gtklock.enableGnomeKeyring)" \
-    "$host gtklock GNOME Keyring"
-  gtklock_pam_source=$(nix build \
-    --no-link \
-    --print-out-paths \
-    "${flake_ref}#nixosConfigurations.${host}.config.environment.etc.\"pam.d/gtklock\".source")
-  gtklock_pam_auth=$(awk '/^# Authentication management\./,/^# Password management\./' "$gtklock_pam_source")
-  assert_contains \
-    "pam_gnome_keyring.so auto_start" \
-    "$gtklock_pam_auth" \
-    "$host gtklock unlocks GNOME Keyring during authentication"
-  assert_contains \
-    "nix-wallpaper.png" \
-    "$(flake_value "$host" programs.gtklock.style)" \
-    "$host gtklock wallpaper"
-  assert_contains \
-    "rgba(54, 54, 58, 0.92)" \
-    "$(flake_value "$host" programs.gtklock.style)" \
-    "$host gtklock Adwaita entry background"
+    '"us,ru"' \
+    "$(flake_json "$host" programs.noctalia-greeter.settings.keyboard.layout)" \
+    "$host greeter keyboard layouts"
+
+  assert_eq "false" "$(flake_json "$host" programs.gtklock.enable)" "$host gtklock disabled"
 
   home_prefix="home-manager.users.itterum"
-  assert_eq "true" "$(flake_json "$host" "$home_prefix.programs.fuzzel.enable")" "$host Fuzzel"
-  assert_eq "true" "$(flake_json "$host" "$home_prefix.services.swayidle.enable")" "$host swayidle"
-  assert_contains \
-    "gtklock --daemonize" \
-    "$(flake_value "$host" "$home_prefix.services.swayidle.events.lock")" \
-    "$host swayidle lock command"
+  assert_eq "true" "$(flake_json "$host" "$home_prefix.programs.noctalia.enable")" "$host Noctalia"
+  assert_eq \
+    "true" \
+    "$(flake_json "$host" "$home_prefix.programs.noctalia.systemd.enable")" \
+    "$host Noctalia user service"
+  assert_eq "false" "$(flake_json "$host" "$home_prefix.programs.fuzzel.enable")" "$host Fuzzel disabled"
+  assert_eq "false" "$(flake_json "$host" "$home_prefix.programs.anyrun.enable")" "$host AnyRun disabled"
+  assert_eq "false" "$(flake_json "$host" "$home_prefix.services.swayidle.enable")" "$host swayidle disabled"
   assert_eq "false" "$(flake_json "$host" "$home_prefix.programs.swaylock.enable")" "$host swaylock disabled"
-  assert_eq "true" "$(flake_json "$host" "$home_prefix.services.wayle.enable")" "$host Wayle"
+  assert_eq "false" "$(flake_json "$host" "$home_prefix.services.wayle.enable")" "$host Wayle disabled"
   assert_eq "false" "$(flake_json "$host" "$home_prefix.services.mako.enable")" "$host Mako disabled"
+  assert_eq \
+    '"Noctalia"' \
+    "$(flake_json "$host" "$home_prefix.programs.noctalia.settings.theme.builtin")" \
+    "$host Noctalia theme"
+  assert_eq \
+    "true" \
+    "$(flake_json "$host" "$home_prefix.programs.noctalia.settings.lockscreen.enabled")" \
+    "$host Noctalia lock screen"
+  assert_eq \
+    "300" \
+    "$(flake_json "$host" "$home_prefix.programs.noctalia.settings.idle.behavior.lock.timeout")" \
+    "$host Noctalia idle lock"
+  assert_eq \
+    "600" \
+    "$(flake_json "$host" "$home_prefix.programs.noctalia.settings.idle.behavior.screen-off.timeout")" \
+    "$host Noctalia screen off"
+  assert_contains \
+    "nix-wallpaper.png" \
+    "$(flake_value "$host" "$home_prefix.programs.noctalia.settings.wallpaper.default.path")" \
+    "$host Noctalia wallpaper"
+  home_packages=$(flake_json "$host" "$home_prefix.home.packages")
+  assert_contains "playerctl" "$home_packages" "$host Niri media binding dependency"
+  assert_contains "brightnessctl" "$home_packages" "$host Niri brightness binding dependency"
   assert_eq \
     '"adw-gtk3-dark"' \
     "$(flake_json "$host" "$home_prefix.gtk.theme.name")" \
@@ -207,26 +221,31 @@ for host in laptop desktop; do
     "$(flake_json "$host" "$home_prefix.qt.qt6ctSettings.Appearance.icon_theme")" \
     "$host Qt 6 icon theme"
   assert_eq \
-    '"WhiteSur-dark"' \
-    "$(flake_json "$host" "$home_prefix.programs.fuzzel.settings.main.icon-theme")" \
-    "$host Fuzzel icon theme"
-  assert_eq \
-    '"#222226"' \
-    "$(flake_json "$host" "$home_prefix.services.wayle.settings.styling.palette.bg")" \
-    "$host Wayle Adwaita background"
-  assert_eq \
-    '"#3584e4"' \
-    "$(flake_json "$host" "$home_prefix.services.wayle.settings.styling.palette.primary")" \
-    "$host Wayle Adwaita accent"
-  assert_eq \
     '["Adwaita Dark"]' \
     "$(flake_json "$host" "$home_prefix.programs.ghostty.settings.theme")" \
     "$host Ghostty theme"
+  assert_eq \
+    "true" \
+    "$(flake_json "$host" "$home_prefix.programs.starship.settings.add_newline")" \
+    "$host managed Starship config"
   assert_eq \
     '"macOS"' \
     "$(flake_json "$host" "$home_prefix.home.pointerCursor.name")" \
     "$host cursor theme"
 done
+
+assert_eq \
+  "1800" \
+  "$(flake_json laptop "home-manager.users.itterum.programs.noctalia.settings.idle.behavior.suspend.timeout")" \
+  "laptop Noctalia suspend timeout"
+assert_contains \
+  "systemctl suspend" \
+  "$(flake_value laptop "home-manager.users.itterum.programs.noctalia.settings.idle.behavior.suspend.command")" \
+  "laptop Noctalia suspend command"
+assert_not_contains \
+  '"suspend"' \
+  "$(flake_json desktop "home-manager.users.itterum.programs.noctalia.settings.idle.behavior")" \
+  "desktop Noctalia suspend disabled"
 
 helix_languages=$(flake_json laptop "home-manager.users.itterum.programs.helix.languages.language")
 assert_eq \
@@ -257,10 +276,17 @@ assert_eq \
   "$(flake_json laptop "home-manager.users.itterum.xdg.configFile.niri-config.force")" \
   "Niri config migration"
 assert_contains 'output "HDMI-A-1"' "$niri_config" "Niri HDMI output"
-assert_contains 'spawn "fuzzel"' "$niri_config" "Niri Fuzzel binding"
-assert_contains 'spawn-at-startup "/nix/store/' "$niri_config" "Niri startup command"
-assert_contains '/bin/gtklock"' "$niri_config" "Niri startup lock"
-assert_contains 'spawn "gtklock" "--daemonize"' "$niri_config" "Niri gtklock binding"
+assert_contains \
+  'spawn "noctalia" "msg" "panel-toggle" "launcher"' \
+  "$niri_config" \
+  "Niri Noctalia launcher binding"
+assert_contains \
+  'spawn "noctalia" "msg" "session" "lock"' \
+  "$niri_config" \
+  "Niri Noctalia lock binding"
+assert_not_contains 'spawn-at-startup' "$niri_config" "Niri startup lock removed"
+assert_not_contains 'gtklock' "$niri_config" "Niri gtklock binding removed"
+assert_not_contains 'anyrun' "$niri_config" "Niri AnyRun binding removed"
 assert_not_contains 'swaylock' "$niri_config" "Niri swaylock binding removed"
 assert_contains 'focus-workspace 1' "$niri_config" "Niri workspace binding"
 assert_contains \

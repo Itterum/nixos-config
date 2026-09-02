@@ -1,24 +1,33 @@
 {
-  config,
+  inputs,
   pkgs,
   ...
 }:
 
-let
-  niriSession = "${config.programs.niri.package}/bin/niri-session";
-in
 {
-  services.greetd = {
+  imports = [
+    inputs.noctalia-greeter.nixosModules.default
+  ];
+
+  programs.noctalia-greeter = {
     enable = true;
-    useTextGreeter = true;
-
     settings = {
-      initial_session = {
-        command = niriSession;
-        user = "itterum";
+      session.default = "niri";
+      idle.timeout = 300;
+      cursor = {
+        theme = "macOS";
+        size = 24;
+        path = "${pkgs.apple-cursor}/share/icons";
       };
-
-      default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --cmd ${niriSession}";
+      keyboard = {
+        layout = "us,ru";
+        options = "ctrl:nocaps,grp:shifts_toggle";
+      };
     };
+  };
+
+  services.greetd = {
+    useTextGreeter = false;
+    settings.default_session.user = "greeter";
   };
 }

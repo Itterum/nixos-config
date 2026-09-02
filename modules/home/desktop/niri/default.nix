@@ -11,7 +11,6 @@
     ./outputs.nix
     ./appearance.nix
     ./animations.nix
-    ./startup.nix
     ./rules.nix
     ./binds
   ];

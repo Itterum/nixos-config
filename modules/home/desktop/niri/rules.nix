@@ -92,7 +92,7 @@ in
         };
       }
       {
-        matches = [ { namespace = "^awww-daemon$"; } ];
+        matches = [ { namespace = "^noctalia-wallpaper$"; } ];
         place-within-backdrop = true;
       }
     ];
