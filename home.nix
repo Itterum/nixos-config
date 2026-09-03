@@ -25,6 +25,7 @@
     sessionVariables = {
       EDITOR = "hx";
       VISUAL = "hx";
+      COLORTERM = "truecolor";
     };
   };
 
