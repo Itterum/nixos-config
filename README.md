@@ -1,96 +1,188 @@
-# itterum NixOS configuration
+# Portable NixOS-WSL CLI environment
 
-The flake defines one NixOS host:
+This repository configures one reusable NixOS-WSL command-line system. It has
+no desktop environment or graphical applications.
 
-| Host | Hostname | Power profile | Graphics |
-| --- | --- | --- | --- |
-| `desktop` | `desktop` | default desktop policy | NVIDIA RTX 5060, open kernel module |
+## Included tools
 
-The desktop uses Limine with the `Windows Boot Manager` EFI entry. Home Manager
-configures the `itterum` user.
+- Zsh, Starship, direnv with nix-direnv, Git, GitHub CLI, tmux
+- ripgrep, fd, fzf, zoxide, bat, eza, btop, tree, jq, fastfetch
+- Helix with language servers and formatters
+- Codex CLI, uv, kubectl, k9s, Teleport
+- rootless Podman with a Docker-compatible command
 
-## Repository layout
+Distrobox is intentionally absent.
 
-- `hosts/` contains only host-specific composition and generated hardware data.
-- `profiles/` defines the shared NixOS and Home Manager workstation profiles.
-- `modules/nixos/` contains reusable system, desktop, hardware, network,
-  program and virtualisation modules.
-- `modules/home/` contains reusable desktop, shell and user-program modules.
-  Larger configurations such as Niri and Helix are split into focused files.
-- `home/itterum/` is the user entry point that selects a Home Manager profile.
-- `assets/` contains declaratively installed resources such as wallpapers.
-- `tests/` contains evaluation-based regression checks for the desktop host.
+## Layout
 
-## Checks
+- flake.nix wires Nixpkgs, NixOS-WSL, and Home Manager.
+- configuration.nix defines the WSL system, account, Nix, and Podman.
+- home.nix defines the command-line user environment.
+- helix.nix defines editor and language-server settings.
+- tests/configuration.sh evaluates the portable configuration invariants.
 
-```bash
+The only flake output is nixosConfigurations.wsl.
+
+## Fresh installation
+
+Start with an imported official NixOS-WSL distribution named NixOS. Open it as
+the initial nixos user and clone the repository with temporary Git:
+
+~~~bash
+nix-shell --extra-experimental-features 'nix-command flakes' -p git \
+  --run 'git clone https://github.com/Itterum/nixos-config.git ~/nixos-config'
+
+cd ~/nixos-config
+
+nix --extra-experimental-features 'nix-command flakes' \
+  build --no-link \
+  'path:.#nixosConfigurations.wsl.config.system.build.toplevel'
+~~~
+
+The build must succeed before the account changes. Exit the WSL shell. In
+Windows PowerShell, stop the distribution and reopen it as root:
+
+~~~powershell
+wsl.exe --terminate NixOS
+wsl.exe -d NixOS -u root
+~~~
+
+In the root shell, record the current generation and make a dated, root-owned
+copy of the original configuration before changing the account:
+
+~~~bash
+backup="/root/nixos-backup-$(date -u +%Y%m%dT%H%M%SZ)"
+cp -a /etc/nixos "$backup"
+
+{
+  date -u
+  id nixos
+  readlink -f /run/current-system
+  nixos-rebuild list-generations
+} > "$backup/migration-state.txt"
+
+printf 'Recovery backup: %s\n' "$backup"
+~~~
+
+Keep the printed path. Then rename the existing UID 1000 account, move its
+home, and activate the previously built configuration:
+
+~~~bash
+usermod --login itterum nixos
+usermod --home /home/itterum --move-home itterum
+
+id itterum
+
+nixos-rebuild switch \
+  --flake path:/home/itterum/nixos-config#wsl \
+  --extra-experimental-features 'nix-command flakes'
+~~~
+
+Exit, restart once more, and open the normal default session:
+
+~~~powershell
+wsl.exe --terminate NixOS
+wsl.exe -d NixOS
+~~~
+
+The session should now report:
+
+~~~bash
+whoami
+# itterum
+
+printf '%s\n' "$HOME"
+# /home/itterum
+~~~
+
+The configuration deliberately preserves system.stateVersion 25.05. Do not
+change it when moving the configuration to a newer computer.
+
+## GitHub SSH key
+
+To copy the current Windows Ed25519 key into WSL, run these commands as the
+Linux user. They do not modify the Windows source files:
+
+~~~bash
+install -d -m 0700 ~/.ssh
+install -m 0600 /mnt/c/Users/itterum/.ssh/id_ed25519 ~/.ssh/id_ed25519
+install -m 0644 /mnt/c/Users/itterum/.ssh/id_ed25519.pub ~/.ssh/id_ed25519.pub
+
+cmp -s /mnt/c/Users/itterum/.ssh/id_ed25519.pub ~/.ssh/id_ed25519.pub &&
+  printf 'Public key copy verified\n'
+ssh-keygen -lf /mnt/c/Users/itterum/.ssh/id_ed25519.pub
+ssh-keygen -lf ~/.ssh/id_ed25519.pub
+ssh -T git@github.com
+~~~
+
+A successful GitHub authentication says that authentication succeeded and that
+GitHub does not provide shell access. The SSH command commonly exits with
+status 1 despite successful authentication.
+
+Switch this checkout from HTTPS to SSH:
+
+~~~bash
+git remote set-url origin git@github.com:Itterum/nixos-config.git
+git ls-remote origin HEAD
+~~~
+
+## Apply changes
+
+Edit the checkout in the Linux filesystem, validate it, then activate it:
+
+~~~bash
+cd ~/nixos-config
+
 bash tests/configuration.sh
 nix flake check path:. --no-build
-nix build --no-link 'path:.#nixosConfigurations.desktop.config.system.build.toplevel'
-```
+nix build --no-link \
+  'path:.#nixosConfigurations.wsl.config.system.build.toplevel'
 
-Use the `path:` form while newly created files are not yet tracked by Git.
+sudo nixos-rebuild switch --flake path:.#wsl
+~~~
 
-## Installing the desktop
+Update pinned dependencies intentionally:
 
-`hosts/desktop/hardware-configuration.nix` in the repository is deliberately a
-minimal bootstrap file. Its root filesystem points to the intentionally absent
-label `REPLACE_ME_DESKTOP_ROOT`; it does not contain real disk UUIDs, initrd
-storage drivers or CPU firmware settings and cannot be used for the real
-installation. The related evaluation warning is expected until the scan is
-replaced.
+~~~bash
+cd ~/nixos-config
+nix flake update
+bash tests/configuration.sh
+sudo nixos-rebuild switch --flake path:.#wsl
+~~~
 
-From the NixOS installer, first partition the disks and mount the target root at
-`/mnt`. Mount the EFI system partition at `/mnt/boot`; this is required by the
-desktop Limine configuration. Then generate the hardware scan into a temporary
-directory and replace the bootstrap file:
+## Maintenance and recovery
 
-```bash
-config_repo=/mnt/etc/nixos-config
-generated_config=/tmp/nixos-generated
+List and roll back NixOS generations:
 
-git clone <your-repository-url> "$config_repo"
-sudo nixos-generate-config --root /mnt --dir "$generated_config"
-sudo install -m 0644 \
-  "$generated_config/hardware-configuration.nix" \
-  "$config_repo/hosts/desktop/hardware-configuration.nix"
+~~~bash
+sudo nixos-rebuild list-generations
+sudo nixos-rebuild switch --rollback
+~~~
 
-cd "$config_repo"
-nix flake check path:. --no-build
-sudo nixos-install --flake 'path:.#desktop'
-sudo nixos-enter --root /mnt -c 'passwd itterum'
-```
+Run garbage collection manually:
 
-The last command sets the login password for the declaratively created user;
-the configuration intentionally does not store a plaintext or hashed password
-in Git. Disable Secure Boot for the initial installation unless you separately
-configure a signed-boot solution such as Lanzaboote.
+~~~bash
+sudo nix-collect-garbage --delete-older-than 14d
+nix store optimise
+~~~
 
-Inspect the generated file before installation. It must contain at least the
-real `fileSystems."/"`, `/boot`, storage-related initrd modules, host platform
-and the appropriate AMD or Intel CPU microcode option. Do not reuse a hardware
-scan from another machine because its filesystem and swap UUIDs will differ.
+If the default account cannot start, open a root recovery shell from Windows:
 
-The RTX 5060 configuration lives only in
-`modules/nixos/hardware/nvidia.nix`. PRIME is intentionally absent because this
-desktop has no hybrid graphics. GPU access inside Podman containers is also not
-enabled; add
-`hardware.nvidia-container-toolkit.enable = true` only if CUDA/container GPU
-workloads are needed.
+~~~powershell
+wsl.exe -d NixOS -u root
+~~~
 
-## Declarative desktop settings
+The migration procedure keeps a dated copy of the previous /etc/nixos under
+/root. If activation fails after the account rename, open the root recovery
+shell, restore the original account name, and switch to the backed-up flake:
 
-Niri is configured entirely through `programs.niri.settings`; there is no
-maintained `config.kdl` in the repository. The Nix modules under
-`modules/home/desktop/niri/` generate and validate the final KDL configuration.
+~~~bash
+usermod --login nixos itterum
+usermod --home /home/nixos --move-home nixos
 
-Noctalia Greeter is the graphical `greetd` frontend and offers Niri as the
-default session. Automatic login is disabled, so every new graphical session
-starts with authentication in the greeter.
+nixos-rebuild switch \
+  --flake path:/root/nixos-backup-YYYYMMDDTHHMMSSZ#nixos \
+  --extra-experimental-features 'nix-command flakes'
+~~~
 
-Noctalia is the active desktop shell, launcher, notification provider,
-wallpaper engine, lock screen and idle manager. It runs as a Home Manager
-systemd user service, and Niri key bindings control it through `noctalia msg`.
-The wallpaper is installed from `assets/wallpapers/nix-wallpaper.png` into the
-user's managed Home Manager files. Wayle, AnyRun, Fuzzel, swayidle, gtklock,
-Mako and DMS are disabled.
+Replace the timestamp with the printed backup path.
