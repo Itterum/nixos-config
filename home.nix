@@ -32,14 +32,16 @@
   programs = {
     home-manager.enable = true;
 
-    git.enable = true;
-    gh.enable = true;
+    git = {
+      enable = true;
 
-    programs.git.settings = {
+settings = {
         user.name = "itterum";
         user.email = "ivan.lyashenko.it@gmail.com";
         init.defaultBranch = "main";
     };
+    };
+    gh.enable = true;
 
     zsh = {
       enable = true;
