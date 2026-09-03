@@ -35,6 +35,12 @@
     git.enable = true;
     gh.enable = true;
 
+    programs.git.settings = {
+        user.name = "itterum";
+        user.email = "ivan.lyashenko.it@gmail.com";
+        init.defaultBranch = "main";
+    };
+
     zsh = {
       enable = true;
       enableCompletion = true;
