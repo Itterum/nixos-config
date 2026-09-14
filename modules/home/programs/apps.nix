@@ -8,5 +8,6 @@
     nautilus
     obsidian
     telegram-desktop
+    xwayland-satellite
   ];
 }

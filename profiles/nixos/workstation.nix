@@ -6,7 +6,7 @@
     ../../modules/nixos/system/tools.nix
     ../../modules/nixos/system/users.nix
     ../../modules/nixos/desktop/audio.nix
-    ../../modules/nixos/desktop/niri.nix
+    ../../modules/nixos/desktop/hyprland.nix
     ../../modules/nixos/desktop/portals.nix
     ../../modules/nixos/desktop/session.nix
     ../../modules/nixos/desktop/greeter.nix

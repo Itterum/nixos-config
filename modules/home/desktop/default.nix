@@ -2,6 +2,8 @@
   imports = [
     ./theme.nix
     ./fallback.nix
-    ./niri
+    ./hyprland
+    ./itterum-shell.nix
   ];
+
 }

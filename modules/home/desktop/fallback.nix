@@ -12,15 +12,15 @@ in
     fuzzel.enable = true;
     swaylock.enable = true;
     waybar = {
-      enable = true;
-      systemd.enable = true;
+      enable = false;
+      systemd.enable = false;
     };
   };
 
   services = {
-    mako.enable = true;
+    mako.enable = false;
     swayidle = {
-      enable = true;
+      enable = false;
       events.before-sleep = lock;
       timeouts = [
         {
