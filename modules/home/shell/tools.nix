@@ -13,7 +13,6 @@
     kubectl
     k9s
     teleport
-    codex
   ];
 
   programs = {

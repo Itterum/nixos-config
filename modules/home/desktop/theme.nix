@@ -1,14 +1,16 @@
 { pkgs, ... }:
 
 let
-  cursorName = "macOS";
+  cursorName = "Bibata-Modern-Classic";
   cursorSize = 24;
   gtkThemeName = "adw-gtk3-dark";
   iconThemeName = "WhiteSur-dark";
 in
 {
+  imports = [ ./themes/kanagawa.nix ];
+
   home.pointerCursor = {
-    package = pkgs.apple-cursor;
+    package = pkgs.bibata-cursors;
     name = cursorName;
     size = cursorSize;
     gtk.enable = true;
@@ -54,5 +56,10 @@ in
     cursor-theme = cursorName;
     gtk-theme = gtkThemeName;
     icon-theme = iconThemeName;
+  };
+
+  home.sessionVariables = {
+    GTK_THEME = gtkThemeName;
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
   };
 }

@@ -5,7 +5,8 @@
     enable = true;
     settings.default_session = {
       user = "greeter";
-      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --cmd ${config.programs.niri.package}/bin/niri-session";
+      # Matches the Exec command shipped by hyprland-uwsm.desktop.
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --cmd '${pkgs.uwsm}/bin/uwsm start -e -D Hyprland hyprland.desktop'";
     };
   };
 }

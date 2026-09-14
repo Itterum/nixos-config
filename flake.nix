@@ -4,7 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
-    itterum-shell.url = "path:./itterum-shell";
+    itterum-shell = {
+      url = "path:./itterum-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     niri-flake = {
       url = "github:sodiboo/niri-flake";

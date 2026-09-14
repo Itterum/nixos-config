@@ -63,7 +63,9 @@ assert_eq \
   "home state version"
 
 assert_eq "true" "$(flake_json desktop boot.loader.systemd-boot.enable)" "systemd-boot"
-assert_eq "true" "$(flake_json desktop programs.niri.enable)" "Niri"
+assert_eq "true" "$(flake_json desktop programs.hyprland.enable)" "Hyprland"
+assert_eq "true" "$(flake_json desktop programs.hyprland.withUWSM)" "Hyprland UWSM"
+assert_eq '"hyprland-uwsm"' "$(flake_json desktop services.displayManager.defaultSession)" "default session"
 assert_eq "true" "$(flake_json desktop services.greetd.enable)" "greetd"
 assert_eq "true" "$(flake_json desktop services.pipewire.enable)" "PipeWire"
 assert_eq "true" "$(flake_json desktop networking.networkmanager.enable)" "NetworkManager"
@@ -82,7 +84,7 @@ assert_eq "false" "$(flake_json desktop boot.loader.limine.enable)" "Limine disa
 assert_not_contains '"nvidia"' "$(flake_json desktop services.xserver.videoDrivers)" "generic graphics"
 
 home_prefix="home-manager.users.itterum"
-for program in zsh starship direnv git ghostty firefox helix; do
+for program in zsh starship direnv git helix foot zellij zed-editor; do
   assert_eq "true" "$(flake_json desktop ${home_prefix}.programs.${program}.enable)" "$program"
 done
 assert_eq \
@@ -90,34 +92,53 @@ assert_eq \
   "$(flake_json desktop ${home_prefix}.programs.direnv.nix-direnv.enable)" \
   "nix-direnv"
 home_packages=$(flake_json desktop ${home_prefix}.home.packages)
-for package in ripgrep fd jq tree uv kubectl k9s codex nautilus keepassxc telegram-desktop obsidian; do
+for package in ripgrep fd jq tree uv kubectl k9s codex chatgpt-linux nautilus gnome-disk-utility telegram-desktop obsidian bruno brave google-chrome xwayland-satellite; do
   assert_contains "$package" "$home_packages" "$package package"
 done
+for program in ghostty firefox; do
+  assert_eq "false" "$(flake_json desktop ${home_prefix}.programs.${program}.enable)" "$program disabled"
+done
 
-for program in waybar fuzzel swaylock; do
-  assert_eq "true" "$(flake_json desktop ${home_prefix}.programs.${program}.enable)" "$program"
-done
-for service in mako swayidle; do
-  assert_eq "true" "$(flake_json desktop ${home_prefix}.services.${service}.enable)" "$service"
-done
+assert_eq "false" "$(flake_json desktop ${home_prefix}.programs.waybar.enable)" "Waybar autostart disabled"
+assert_eq "false" "$(flake_json desktop ${home_prefix}.services.mako.enable)" "Mako disabled"
+
+shell_service="${home_prefix}.systemd.user.services.itterum-shell"
 assert_contains \
   '"graphical-session.target"' \
-  "$(flake_json desktop ${home_prefix}.systemd.user.services.swaybg.Install.WantedBy)" \
-  "swaybg user service"
-niri_config=$(flake_value desktop ${home_prefix}.programs.niri.finalConfig)
-assert_contains 'spawn "fuzzel"' "$niri_config" "Fuzzel binding"
-assert_contains 'spawn "ghostty"' "$niri_config" "Ghostty binding"
-assert_contains 'focus-workspace 1' "$niri_config" "workspace binding"
-assert_not_contains 'noctalia' "$niri_config" "Noctalia removed"
-assert_not_contains 'hyprctl' "$niri_config" "Hyprland command removed"
-assert_not_contains 'output "' "$niri_config" "fixed outputs removed"
-assert_not_contains 'itterum-shell' "$niri_config" "Itterum Shell deferred"
+  "$(flake_json desktop ${shell_service}.Unit.After)" \
+  "Itterum Shell graphical ordering"
+assert_contains \
+  '"graphical-session.target"' \
+  "$(flake_json desktop ${shell_service}.Unit.PartOf)" \
+  "Itterum Shell graphical lifecycle"
+assert_contains \
+  '"graphical-session.target"' \
+  "$(flake_json desktop ${shell_service}.Install.WantedBy)" \
+  "Itterum Shell user service"
+assert_eq '"on-failure"' "$(flake_json desktop ${shell_service}.Service.Restart)" "shell restart policy"
+assert_eq '"3s"' "$(flake_json desktop ${shell_service}.Service.RestartSec)" "shell restart delay"
+assert_eq "5" "$(flake_json desktop ${shell_service}.Unit.StartLimitBurst)" "shell restart burst"
+assert_eq "60" "$(flake_json desktop ${shell_service}.Unit.StartLimitIntervalSec)" "shell restart interval"
+assert_contains \
+  'itterum-shell' \
+  "$(flake_json desktop ${shell_service}.Service.ExecStart)" \
+  "packaged shell executable"
+
+hypr_binds=$(flake_json desktop ${home_prefix}.wayland.windowManager.hyprland.settings.bind)
+for action in foot itterum-shell loginctl; do
+  assert_contains "$action" "$hypr_binds" "Hyprland rescue binding: $action"
+done
+assert_not_contains \
+  './niri' \
+  "$(<"${repo_root}/modules/home/desktop/default.nix")" \
+  "Home Manager Niri inactive"
 
 for path in \
   hosts/desktop/default.nix \
   profiles/nixos/workstation.nix \
   profiles/home/workstation.nix \
-  modules/home/desktop/niri/default.nix \
+  modules/home/desktop/hyprland/default.nix \
+  modules/home/desktop/itterum-shell.nix \
   itterum-shell/flake.nix; do
   assert_file_exists "${repo_root}/${path}"
 done
