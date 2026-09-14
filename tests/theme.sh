@@ -41,4 +41,12 @@ assert_contains '#7e9cd8' "$colors" "shell accent"
 
 assert_eq '"prefer-dark"' "$(flake_json dconf.settings."org/gnome/desktop/interface".color-scheme)" "GTK dark preference"
 
+assert_eq '"Bibata-Modern-Classic"' "$(flake_json home.pointerCursor.name)" "cursor name"
+assert_eq '24' "$(flake_json home.pointerCursor.size)" "cursor size"
+assert_contains 'bibata-cursors' "$(flake_json home.pointerCursor.package)" "cursor package"
+assert_eq '"Bibata-Modern-Classic"' "$(flake_json dconf.settings."org/gnome/desktop/interface".cursor-theme)" "dconf cursor"
+hypr_env=$(flake_json wayland.windowManager.hyprland.settings.env)
+assert_contains 'XCURSOR_THEME,Bibata-Modern-Classic' "$hypr_env" "Hyprland cursor name"
+assert_contains 'XCURSOR_SIZE,24' "$hypr_env" "Hyprland cursor size"
+
 printf 'theme regression checks passed\n'

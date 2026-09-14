@@ -16,6 +16,10 @@ in
     settings = {
       "$mod" = "SUPER";
       monitor = [ ",preferred,auto,1" ];
+      env = [
+        "XCURSOR_THEME,Bibata-Modern-Classic"
+        "XCURSOR_SIZE,24"
+      ];
 
       general = {
         gaps_in = 5;
