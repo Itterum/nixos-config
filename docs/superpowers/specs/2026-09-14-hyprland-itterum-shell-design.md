@@ -174,7 +174,9 @@ Kanagawa provides one shared palette for Hyprland decorations, Itterum Shell, Ar
 
 "Adaptive" means that supported application configuration is derived from the selected system theme and remains visually coherent when the shared theme module changes. It does not authorize installing application theme extensions at runtime, editing application databases, or pretending an unsupported application has exact palette coverage. Per-application exceptions are documented and degrade to the system dark appearance.
 
-The cursor matches the current host: `linux-cursor-light` at size 24 for Wayland, XWayland, GTK, Qt, and dconf. The current asset is a locally converted "Cursor Concept 2 Light Linux" theme and is not present in the selected Nixpkgs. Its source bundle does not expose a clear redistribution license, so implementation must record provenance and either package it as a private local asset with explicit user approval or use a separately licensed equivalent. The existing `apple-cursor` placeholder is not considered the requested final cursor.
+The cursor on the current host is `linux-cursor-light` at size 24 for Wayland, XWayland, GTK, Qt, and dconf. It is a local XCursor conversion of the Windows theme "Cursor Concept 2 Free" by Jepri Creations and is not present in the selected Nixpkgs. The repository is public, and the publisher's terms prohibit reproduction or distribution without express written permission. Therefore neither the original files nor the converted derivative may be committed or fetched into this public configuration unless the author grants suitable redistribution permission.
+
+Until such permission exists, the implementation uses a separately licensed equivalent approved by the user. The recommended closest packaged candidate is `Bibata-Modern-Ice` at size 24 from `pkgs.bibata-cursors`; it is a rounded white cursor, is available in the selected Nixpkgs, and its upstream source is GPL-3.0. The existing `apple-cursor` remains a temporary placeholder only and is not considered the final cursor choice.
 
 ## Arc Dock adaptation
 

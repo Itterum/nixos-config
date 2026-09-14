@@ -15,7 +15,7 @@
 - Complete the foundation plan first.
 - Preserve the user's existing uncommitted changes in `modules/home/programs/apps.nix`; use patch staging for intended hunks.
 - Do not install theme extensions from a running shell or mutate application databases.
-- Do not commit the locally converted cursor until its redistribution status is resolved or the user explicitly approves keeping it as a private repository asset.
+- The repository is public. Do not commit or fetch the locally converted Cursor Concept 2 files without express redistribution permission from their author.
 - Preserve Arc Dock's MIT license, upstream URL, version, and source commit.
 
 ---
@@ -61,24 +61,22 @@
 - [ ] Generate the shell desktop-ID allowlist from this application module and evaluate that every requested GUI/terminal entry is discoverable while incidental dependency entries are excluded.
 - [ ] Run application/theme tests and the complete no-link system build; commit intended hunks only: `git add -p modules/home/programs/apps.nix && git add modules/home/programs profiles tests/applications.sh && git commit -m "feat: declare workstation application set"`.
 
-## Task 3: Package the requested cursor consistently
+## Task 3: Package an approved redistributable cursor consistently
 
 **Files:**
 
-- Create after provenance decision: `packages/linux-cursor-light/default.nix`
-- Create after provenance decision: `assets/cursors/linux-cursor-light/`
 - Modify: `modules/home/desktop/theme.nix`
 - Modify: `modules/home/desktop/hyprland/default.nix`
 - Modify: `tests/theme.sh`
-- Create: `docs/assets/linux-cursor-light.md`
+- Create: `docs/assets/cursor.md`
 
-- [ ] Record the observed source facts: theme ID `linux-cursor-light`, display name `Cursor Concept 2 Light Linux`, size 24, local source bundle under `~/Downloads/concept-2_ccef07102a_VSTHEMES-ORG`, and no clear license in that bundle.
-- [ ] Stop before copying binaries into Git unless redistribution is established or the user explicitly chooses a private vendored asset. If neither is true, package a separately licensed visually equivalent cursor and record the visible deviation for approval.
-- [ ] Add a fixed-output/local derivation containing only runtime `index.theme` and `cursors/` files; exclude conversion sources, temporary PNG/CUR files, absolute WSL paths, and download metadata.
-- [ ] Replace the current `apple-cursor` placeholder with `home.pointerCursor` name `linux-cursor-light`, size 24, GTK/X11 integration, Hyprland environment, and matching dconf values.
+- [ ] Record the observed source facts: local theme ID `linux-cursor-light`, display name `Cursor Concept 2 Light Linux`, size 24, conversion from Jepri Creations' Windows theme, public repository status, and the publisher's no-redistribution terms.
+- [ ] Do not copy the original or converted asset into Git and do not create an unattended download derivation for it. Exact reuse requires written redistribution permission from the author.
+- [ ] Present `Bibata-Modern-Ice` from `pkgs.bibata-cursors` as the recommended GPL-3.0 replacement and obtain visual approval before making it the final default. If rejected, compare another Nixpkgs-packaged licensed candidate such as `capitaine-cursors-white`.
+- [ ] Replace the current `apple-cursor` placeholder with the approved `home.pointerCursor` package/name at size 24, including GTK/X11 integration, Hyprland environment, and matching dconf values.
 - [ ] Extend tests to assert one cursor name/size across all owners and that the package exists in the closure.
 - [ ] Run `bash tests/theme.sh`, build the cursor derivation, and visually verify normal, text, link, resize, busy, and XWayland cursors.
-- [ ] Commit only after the provenance gate: `git add packages assets modules/home/desktop/theme.nix modules/home/desktop/hyprland/default.nix tests/theme.sh docs/assets/linux-cursor-light.md && git commit -m "feat: package workstation cursor"`.
+- [ ] Commit the licensed package configuration and provenance note: `git add modules/home/desktop/theme.nix modules/home/desktop/hyprland/default.nix tests/theme.sh docs/assets/cursor.md && git commit -m "feat: configure workstation cursor"`.
 
 ## Task 4: Import Arc Dock with attribution and negative scope tests
 
