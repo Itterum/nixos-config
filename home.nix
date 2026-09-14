@@ -35,11 +35,11 @@
     git = {
       enable = true;
 
-settings = {
+      settings = {
         user.name = "itterum";
         user.email = "ivan.lyashenko.it@gmail.com";
         init.defaultBranch = "main";
-    };
+      };
     };
     gh.enable = true;
 

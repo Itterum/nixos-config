@@ -20,15 +20,13 @@ in
     defaultEditor = true;
 
     themes.transparent_theme = {
-      inherits = "jetbrains_dark";
+      inherits = "kanagawa";
       "ui.background" = { };
     };
 
     extraPackages = with pkgs; [
       bash-language-server
       basedpyright
-      csharp-ls
-      csharpier
       kdlfmt
       marksman
       nixd
@@ -166,7 +164,6 @@ in
           args = [ "server" ];
         };
 
-        csharp-ls.command = "${pkgs.csharp-ls}/bin/csharp-ls";
         qmlls.command = "${pkgs.qt6.qtdeclarative}/bin/qmlls";
 
         vscode-json-language-server = {
@@ -235,23 +232,6 @@ in
               args = [
                 "format"
                 "-"
-              ];
-            };
-            auto-format = true;
-          }
-          {
-            name = "c-sharp";
-            roots = [
-              "*.sln"
-              "*.slnx"
-              "*.csproj"
-            ];
-            language-servers = [ "csharp-ls" ];
-            formatter = {
-              command = "${pkgs.csharpier}/bin/dotnet-csharpier";
-              args = [
-                "format"
-                "--write-stdout"
               ];
             };
             auto-format = true;
