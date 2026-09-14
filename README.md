@@ -1,26 +1,27 @@
 # Itterum NixOS workstation
 
-This flake defines a portable physical NixOS workstation named `desktop`. It uses Niri and a small fallback desktop while Itterum Shell is being adapted from its Omarchy and Hyprland origins.
+This flake defines a portable physical NixOS workstation named `desktop`. It uses Hyprland through UWSM and runs the declarative Itterum Shell as a supervised Home Manager service.
 
 ## Current desktop
 
-- Niri Wayland compositor
+- Hyprland Wayland compositor managed by UWSM
 - greetd with tuigreet
-- Waybar, Fuzzel, Mako, swaybg, swaylock, and swayidle
+- Itterum Shell bar, installed-app launcher, and core desktop surfaces
+- Fuzzel and swaylock retained as manual recovery tools; swaybg owns the wallpaper
 - PipeWire and WirePlumber
 - NetworkManager and Bluetooth
 - XDG portals, polkit, GNOME Keyring, udisks2, gvfs, and upower
-- Home Manager for the `itterum` user
+- Home Manager for the `itterum` user and the shell user service
 - Ghostty, Firefox, Nautilus, KeePassXC, Telegram Desktop, Obsidian, Helix, and CLI development tools
 
-`itterum-shell` is retained as a Git submodule and local flake input, but it is not installed or started. Its current code still assumes Omarchy and Hyprland. The fallback components keep this configuration usable while the shell gains a package, a Niri adapter, and a Home Manager module.
+`itterum-shell` is a Git submodule and local flake input. Hyprland-specific behavior is isolated behind its compositor facade so a Niri backend can be added later without coupling ordinary UI code to either compositor.
 
 ## Layout
 
 - `hosts/desktop/` contains host composition, boot policy, and the replaceable hardware scan.
 - `profiles/` composes reusable NixOS and Home Manager modules.
 - `modules/nixos/` configures system services.
-- `modules/home/` configures the user environment and Niri.
+- `modules/home/` configures the user environment, Hyprland, and Itterum Shell.
 - `home/itterum/` is the Home Manager entry point.
 - `tests/configuration.sh` evaluates portable regression invariants.
 - `assets/` contains managed resources such as the wallpaper.
@@ -37,6 +38,8 @@ nix build --no-link \
 ```
 
 Use `path:.` so untracked files are included while reviewing local changes.
+
+The build is read-only with respect to the running Omarchy session: it evaluates and builds a NixOS closure but does not activate it. Graphical test and recovery commands are documented in [`docs/testing/hyprland-shell-core.md`](docs/testing/hyprland-shell-core.md).
 
 ## Hardware placeholder
 
