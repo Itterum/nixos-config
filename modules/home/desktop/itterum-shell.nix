@@ -6,7 +6,7 @@ let
     builtins.readFile "${inputs.itterum-shell}/config/itterum-shell/shell.json"
   );
   shellConfig = defaultConfig // {
-    applications = defaultConfig.applications or [ ];
+    applications = config.itterum.applications.desktopIds;
   };
   palette = config.itterum.theme.palette;
 in

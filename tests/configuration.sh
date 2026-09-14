@@ -84,7 +84,7 @@ assert_eq "false" "$(flake_json desktop boot.loader.limine.enable)" "Limine disa
 assert_not_contains '"nvidia"' "$(flake_json desktop services.xserver.videoDrivers)" "generic graphics"
 
 home_prefix="home-manager.users.itterum"
-for program in zsh starship direnv git ghostty firefox helix; do
+for program in zsh starship direnv git helix foot zellij zed-editor; do
   assert_eq "true" "$(flake_json desktop ${home_prefix}.programs.${program}.enable)" "$program"
 done
 assert_eq \
@@ -92,8 +92,11 @@ assert_eq \
   "$(flake_json desktop ${home_prefix}.programs.direnv.nix-direnv.enable)" \
   "nix-direnv"
 home_packages=$(flake_json desktop ${home_prefix}.home.packages)
-for package in ripgrep fd jq tree uv kubectl k9s codex nautilus keepassxc telegram-desktop obsidian xwayland-satellite; do
+for package in ripgrep fd jq tree uv kubectl k9s codex chatgpt-linux nautilus gnome-disk-utility telegram-desktop obsidian bruno brave google-chrome xwayland-satellite; do
   assert_contains "$package" "$home_packages" "$package package"
+done
+for program in ghostty firefox; do
+  assert_eq "false" "$(flake_json desktop ${home_prefix}.programs.${program}.enable)" "$program disabled"
 done
 
 assert_eq "false" "$(flake_json desktop ${home_prefix}.programs.waybar.enable)" "Waybar autostart disabled"

@@ -1,6 +1,6 @@
 {
   programs.helix.settings = {
-    theme = "transparent_theme";
+    theme = "kanagawa";
 
     editor = {
       line-number = "relative";
