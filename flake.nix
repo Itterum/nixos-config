@@ -1,13 +1,10 @@
 {
-  description = "Portable NixOS-WSL CLI environment";
+  description = "My NixOS Configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    itterum-shell.url = "path:./itterum-shell";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
@@ -17,18 +14,30 @@
 
   outputs =
     {
+      self,
       nixpkgs,
-      nixos-wsl,
+      itterum-shell,
       home-manager,
       ...
-    }:
+    }@inputs:
     {
       nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          nixos-wsl.nixosModules.default
-          home-manager.nixosModules.home-manager
+          ./hardware-configuration.nix
           ./configuration.nix
+
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;            
+
+            home-manager.users.itterum = import ./home.nix;
+          }
+
+          {
+            config._module.args = { inherit inputs; };
+          }
         ];
       };
     };
