@@ -1,4 +1,4 @@
-{ inputs, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 
 let
   shellPackage = inputs.itterum-shell.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -8,6 +8,7 @@ let
   shellConfig = defaultConfig // {
     applications = defaultConfig.applications or [ ];
   };
+  palette = config.itterum.theme.palette;
 in
 {
   home.packages = [ shellPackage ];
@@ -16,6 +17,42 @@ in
     force = true;
     text = builtins.toJSON shellConfig;
   };
+
+  xdg.configFile."itterum-shell/theme/colors.toml".text = ''
+    background = "${palette.background}"
+    foreground = "${palette.foreground}"
+    accent = "${palette.accent}"
+    muted = "${palette.muted}"
+    red = "${palette.red}"
+    color0 = "${palette.background}"
+    color1 = "${palette.red}"
+    color2 = "${palette.green}"
+    color3 = "${palette.yellow}"
+    color4 = "${palette.blue}"
+    color5 = "${palette.magenta}"
+    color6 = "${palette.cyan}"
+    color7 = "${palette.foreground}"
+    color8 = "${palette.muted}"
+  '';
+
+  xdg.configFile."itterum-shell/theme/shell.toml".text = ''
+    [bar]
+    background = "background"
+    text = "foreground"
+    active = "accent"
+
+    [popups]
+    background = "background"
+    text = "foreground"
+    border = "accent"
+
+    [menu]
+    background = "background"
+    text = "foreground"
+    border = "muted"
+    selected-background = "${palette.selection}"
+    selected-text = "foreground"
+  '';
 
   systemd.user.services.itterum-shell = {
     Unit = {

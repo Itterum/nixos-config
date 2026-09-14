@@ -7,6 +7,8 @@ let
   iconThemeName = "WhiteSur-dark";
 in
 {
+  imports = [ ./themes/kanagawa.nix ];
+
   home.pointerCursor = {
     package = pkgs.apple-cursor;
     name = cursorName;
@@ -54,5 +56,10 @@ in
     cursor-theme = cursorName;
     gtk-theme = gtkThemeName;
     icon-theme = iconThemeName;
+  };
+
+  home.sessionVariables = {
+    GTK_THEME = gtkThemeName;
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
   };
 }

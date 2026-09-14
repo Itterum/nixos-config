@@ -1,5 +1,9 @@
-{ osConfig, ... }:
+{ config, lib, ... }:
 
+let
+  palette = config.itterum.theme.palette;
+  rgb = color: "rgb(${lib.removePrefix "#" color})";
+in
 {
   imports = [ ./binds.nix ];
 
@@ -18,6 +22,8 @@
         gaps_out = 10;
         border_size = 2;
         layout = "dwindle";
+        "col.active_border" = rgb palette.accent;
+        "col.inactive_border" = rgb palette.muted;
       };
 
       decoration.rounding = 8;
