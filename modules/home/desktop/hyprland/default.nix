@@ -23,6 +23,8 @@ in
       layerrule = [
         "blur, match:namespace ^(arc-dock)$"
         "ignorealpha 0.05, match:namespace ^(arc-dock)$"
+        "blur, match:namespace ^(itterum-spotlight)$"
+        "ignorealpha 0.05, match:namespace ^(itterum-spotlight)$"
       ];
 
       general = {

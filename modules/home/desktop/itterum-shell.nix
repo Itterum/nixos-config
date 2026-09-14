@@ -8,6 +8,9 @@ let
   defaultDockConfig = builtins.readFile (
     "${inputs.itterum-shell}/config/itterum-shell/arc-dock.json"
   );
+  defaultSpotlightConfig = builtins.readFile (
+    "${inputs.itterum-shell}/config/itterum-shell/spotlight.json"
+  );
   shellConfig = defaultConfig // {
     applications = config.itterum.applications.desktopIds;
   };
@@ -24,6 +27,17 @@ in
   xdg.configFile."itterum-shell/arc-dock.json" = {
     force = true;
     text = defaultDockConfig;
+  };
+
+  xdg.configFile."itterum-shell/spotlight.json" = {
+    force = true;
+    text = defaultSpotlightConfig;
+  };
+
+  services.cliphist = {
+    enable = true;
+    allowImages = false;
+    systemdTargets = [ "graphical-session.target" ];
   };
 
   xdg.configFile."itterum-shell/theme/colors.toml".text = ''
