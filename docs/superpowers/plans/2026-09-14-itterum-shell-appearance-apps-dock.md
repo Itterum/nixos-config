@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Apply Kanagawa as the shared default appearance, declare the exact workstation application set, reproduce the current cursor, and integrate an Itterum-native Arc Dock.
+**Goal:** Apply Kanagawa as the shared default appearance, declare the exact workstation application set, configure the approved dark Bibata cursor, and integrate an Itterum-native Arc Dock.
 
 **Architecture:** A single Home Manager theme module exports the Kanagawa palette and toolkit choices to application-specific modules. The package set is an explicit Nix list. Arc Dock is vendored with attribution into `itterum-shell`, uses the existing compositor facade and app library, and keeps only non-installing user preferences/state.
 
@@ -72,8 +72,8 @@
 
 - [ ] Record the observed source facts: local theme ID `linux-cursor-light`, display name `Cursor Concept 2 Light Linux`, size 24, conversion from Jepri Creations' Windows theme, public repository status, and the publisher's no-redistribution terms.
 - [ ] Do not copy the original or converted asset into Git and do not create an unattended download derivation for it. Exact reuse requires written redistribution permission from the author.
-- [ ] Present `Bibata-Modern-Ice` from `pkgs.bibata-cursors` as the recommended GPL-3.0 replacement and obtain visual approval before making it the final default. If rejected, compare another Nixpkgs-packaged licensed candidate such as `capitaine-cursors-white`.
-- [ ] Replace the current `apple-cursor` placeholder with the approved `home.pointerCursor` package/name at size 24, including GTK/X11 integration, Hyprland environment, and matching dconf values.
+- [ ] Configure the user-approved `Bibata-Modern-Classic` from `pkgs.bibata-cursors`; do not substitute the white `Bibata-Modern-Ice` variant.
+- [ ] Replace the current `apple-cursor` placeholder with `home.pointerCursor.package = pkgs.bibata-cursors`, name `Bibata-Modern-Classic`, and size 24, including GTK/X11 integration, Hyprland environment, and matching dconf values.
 - [ ] Extend tests to assert one cursor name/size across all owners and that the package exists in the closure.
 - [ ] Run `bash tests/theme.sh`, build the cursor derivation, and visually verify normal, text, link, resize, busy, and XWayland cursors.
 - [ ] Commit the licensed package configuration and provenance note: `git add modules/home/desktop/theme.nix modules/home/desktop/hyprland/default.nix tests/theme.sh docs/assets/cursor.md && git commit -m "feat: configure workstation cursor"`.

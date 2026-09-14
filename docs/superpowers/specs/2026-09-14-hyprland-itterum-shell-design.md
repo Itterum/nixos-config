@@ -176,7 +176,7 @@ Kanagawa provides one shared palette for Hyprland decorations, Itterum Shell, Ar
 
 The cursor on the current host is `linux-cursor-light` at size 24 for Wayland, XWayland, GTK, Qt, and dconf. It is a local XCursor conversion of the Windows theme "Cursor Concept 2 Free" by Jepri Creations and is not present in the selected Nixpkgs. The repository is public, and the publisher's terms prohibit reproduction or distribution without express written permission. Therefore neither the original files nor the converted derivative may be committed or fetched into this public configuration unless the author grants suitable redistribution permission.
 
-Until such permission exists, the implementation uses a separately licensed equivalent approved by the user. The recommended closest packaged candidate is `Bibata-Modern-Ice` at size 24 from `pkgs.bibata-cursors`; it is a rounded white cursor, is available in the selected Nixpkgs, and its upstream source is GPL-3.0. The existing `apple-cursor` remains a temporary placeholder only and is not considered the final cursor choice.
+The approved replacement is `Bibata-Modern-Classic` at size 24 from `pkgs.bibata-cursors`. It is the dark/black rounded Bibata variant, is available in the selected Nixpkgs, and its upstream source is GPL-3.0. The existing `apple-cursor` is only a temporary placeholder and is not the final cursor choice.
 
 ## Arc Dock adaptation
 
