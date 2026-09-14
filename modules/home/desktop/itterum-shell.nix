@@ -5,6 +5,9 @@ let
   defaultConfig = builtins.fromJSON (
     builtins.readFile "${inputs.itterum-shell}/config/itterum-shell/shell.json"
   );
+  defaultDockConfig = builtins.readFile (
+    "${inputs.itterum-shell}/config/itterum-shell/arc-dock.json"
+  );
   shellConfig = defaultConfig // {
     applications = config.itterum.applications.desktopIds;
   };
@@ -16,6 +19,11 @@ in
   xdg.configFile."itterum-shell/shell.json" = {
     force = true;
     text = builtins.toJSON shellConfig;
+  };
+
+  xdg.configFile."itterum-shell/arc-dock.json" = {
+    force = true;
+    text = defaultDockConfig;
   };
 
   xdg.configFile."itterum-shell/theme/colors.toml".text = ''

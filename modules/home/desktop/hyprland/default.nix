@@ -20,6 +20,10 @@ in
         "XCURSOR_THEME,Bibata-Modern-Classic"
         "XCURSOR_SIZE,24"
       ];
+      layerrule = [
+        "blur, match:namespace ^(arc-dock)$"
+        "ignorealpha 0.05, match:namespace ^(arc-dock)$"
+      ];
 
       general = {
         gaps_in = 5;
