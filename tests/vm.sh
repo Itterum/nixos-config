@@ -31,8 +31,8 @@ jq -e 'index("-vga none") != null' <<<"$qemu_options" >/dev/null \
   || fail "VM disables the legacy VGA device"
 jq -e 'index("-device virtio-vga") != null' <<<"$qemu_options" >/dev/null \
   || fail "VM exposes a compatible VirtIO graphics device"
-jq -e 'index("-display gtk,gl=off") != null' <<<"$qemu_options" >/dev/null \
-  || fail "VM avoids the broken host GTK OpenGL context"
+jq -e 'index("-display gtk,gl=off,grab-on-hover=on") != null' <<<"$qemu_options" >/dev/null \
+  || fail "VM avoids the broken host GTK OpenGL context and captures guest shortcuts"
 [[ $(eval_raw virtualisation.vmVariant.environment.sessionVariables.LIBGL_ALWAYS_SOFTWARE) == 1 ]] \
   || fail "VM forces Mesa software rendering"
 [[ $(eval_raw virtualisation.vmVariant.environment.sessionVariables.WLR_RENDERER_ALLOW_SOFTWARE) == 1 ]] \

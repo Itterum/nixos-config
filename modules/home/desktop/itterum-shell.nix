@@ -86,6 +86,9 @@ in
     };
     Service = {
       ExecStart = lib.getExe shellPackage;
+      Environment = [
+        "XDG_DATA_DIRS=${config.home.profileDirectory}/share:/run/current-system/sw/share"
+      ];
       Restart = "on-failure";
       RestartSec = "3s";
     };

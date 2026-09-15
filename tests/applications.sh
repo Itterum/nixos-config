@@ -40,6 +40,11 @@ config_files=$(eval_json xdg.configFile)
 shell_json=$(jq -r '."itterum-shell/shell.json".text' <<<"$config_files")
 [[ $(jq -c '.applications' <<<"$shell_json") == "$expected_ids" ]] || fail "shell allowlist is not generated from applications module"
 
+shell_environment=$(eval_json systemd.user.services.itterum-shell.Service.Environment)
+jq -e 'any(. == "XDG_DATA_DIRS=/etc/profiles/per-user/itterum/share:/run/current-system/sw/share")' \
+  <<<"$shell_environment" >/dev/null \
+  || fail "shell service cannot discover Home Manager and system desktop entries"
+
 shell_package=$(nix build --no-link --print-out-paths --impure --expr \
   "(builtins.getFlake \"${flake_ref}\").inputs.itterum-shell.packages.x86_64-linux.default")
 shell_bin="${shell_package}/bin/itterum-shell"

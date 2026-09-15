@@ -9,7 +9,7 @@
     qemu.options = [
       "-vga none"
       "-device virtio-vga"
-      "-display gtk,gl=off"
+      "-display gtk,gl=off,grab-on-hover=on"
     ];
   };
 

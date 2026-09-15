@@ -22,6 +22,26 @@ jq -e '.plugins | any(.id == "io.github.claudsondouglas.arcdock")' <<<"$shell_js
   || fail "Arc Dock is enabled"
 pass "Arc Dock is enabled declaratively"
 
+expected_left='["omarchy.menu","omarchy.workspaces","omarchy.active-window"]'
+expected_right='["omarchy.keyboard-layout","omarchy.clock","omarchy.audio","omarchy.network","omarchy.bluetooth","omarchy.monitor","omarchy.power","omarchy.tray"]'
+[[ $(jq -c '[.bar.layout.left[].id]' <<<"$shell_json") == "$expected_left" ]] \
+  || fail "left bar section does not match the approved layout"
+[[ $(jq -c '.bar.layout.center' <<<"$shell_json") == '[]' ]] \
+  || fail "center bar section is not empty"
+[[ $(jq -c '[.bar.layout.right[].id]' <<<"$shell_json") == "$expected_right" ]] \
+  || fail "right bar section does not match the approved layout"
+[[ $(jq -r '.bar.centerAnchor' <<<"$shell_json") == '' ]] \
+  || fail "empty center section still has an anchor"
+pass "bar layout matches the approved workstation arrangement"
+
+shell_package=$(nix build --no-link --print-out-paths --impure --expr \
+  "(builtins.getFlake \"path:${root}\").inputs.itterum-shell.packages.x86_64-linux.default")
+menu_dir="$shell_package/share/itterum-shell/shell/plugins/menu"
+[[ -s "$menu_dir/nixos-logo.svg" ]] || fail "NixOS menu logo is not packaged"
+grep -Fq 'Qt.resolvedUrl("nixos-logo.svg")' "$menu_dir/BarWidget.qml" \
+  || fail "menu button does not render the packaged NixOS logo"
+pass "menu button uses the packaged NixOS logo"
+
 hyprland=$(jq -r '."hypr/looknfeel.lua".text' <<<"$config_files")
 [[ $hyprland == *'"arc-dock"'* && $hyprland == *'hl.layer_rule('* ]] \
   || fail "Arc Dock blur is declared in the compositor configuration"
