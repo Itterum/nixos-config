@@ -124,10 +124,24 @@ assert_contains \
   "$(flake_json desktop ${shell_service}.Service.ExecStart)" \
   "packaged shell executable"
 
-hypr_binds=$(flake_json desktop ${home_prefix}.wayland.windowManager.hyprland.settings.bind)
+hypr_files=$(flake_json desktop ${home_prefix}.xdg.configFile)
+hypr_binds=$(jq -r '."hypr/bindings.lua".text' <<<"$hypr_files")
 for action in foot itterum-shell loginctl; do
   assert_contains "$action" "$hypr_binds" "Hyprland rescue binding: $action"
 done
+
+hyprland_package=$(nix build --no-link --print-out-paths "${flake_ref}#nixosConfigurations.desktop.pkgs.hyprland^out")
+hypr_config_home=$(mktemp -d)
+trap 'rm -rf "$hypr_config_home"' EXIT
+mkdir -p "$hypr_config_home/hypr"
+for module in hyprland monitors input bindings looknfeel autostart; do
+  jq -r --arg path "hypr/${module}.lua" '.[$path].text' <<<"$hypr_files" \
+    >"$hypr_config_home/hypr/${module}.lua"
+done
+XDG_CONFIG_HOME="$hypr_config_home" \
+  "${hyprland_package}/bin/Hyprland" --verify-config --config "$hypr_config_home/hypr/hyprland.lua" \
+  || { printf 'generated Hyprland config is rejected by Hyprland\n' >&2; exit 1; }
+
 assert_not_contains \
   './niri' \
   "$(<"${repo_root}/modules/home/desktop/default.nix")" \
@@ -138,6 +152,8 @@ for path in \
   profiles/nixos/workstation.nix \
   profiles/home/workstation.nix \
   modules/home/desktop/hyprland/default.nix \
+  modules/home/desktop/hyprland/hyprland.lua \
+  modules/home/desktop/hyprland/bindings.lua \
   modules/home/desktop/itterum-shell.nix \
   itterum-shell/flake.nix; do
   assert_file_exists "${repo_root}/${path}"

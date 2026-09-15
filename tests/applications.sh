@@ -40,4 +40,13 @@ config_files=$(eval_json xdg.configFile)
 shell_json=$(jq -r '."itterum-shell/shell.json".text' <<<"$config_files")
 [[ $(jq -c '.applications' <<<"$shell_json") == "$expected_ids" ]] || fail "shell allowlist is not generated from applications module"
 
+shell_package=$(nix build --no-link --print-out-paths --impure --expr \
+  "(builtins.getFlake \"${flake_ref}\").inputs.itterum-shell.packages.x86_64-linux.default")
+shell_bin="${shell_package}/bin/itterum-shell"
+shell_wrapper=$(readlink -f "$shell_bin")
+runtime_path=$(sed -n 's/^export PATH="\(.*\):$PATH"/\1/p' "$shell_wrapper")
+[[ -n $runtime_path ]] || fail "could not read the shell runtime PATH"
+env -i PATH="$runtime_path" /bin/sh -c 'command -v gtk-launch' >/dev/null \
+  || fail "the shell runtime cannot launch desktop entries with gtk-launch"
+
 printf 'application regression checks passed\n'

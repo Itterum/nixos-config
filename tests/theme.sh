@@ -29,11 +29,9 @@ assert_eq '"dark"' "$(flake_json itterum.theme.colorScheme)" "theme color scheme
 assert_eq '"#1f1f28"' "$(flake_json itterum.theme.palette.background)" "Kanagawa background"
 assert_eq '"#dcd7ba"' "$(flake_json itterum.theme.palette.foreground)" "Kanagawa foreground"
 
-hypr_general=$(flake_json wayland.windowManager.hyprland.settings.general)
-active_border=$(jq -r '."col.active_border"' <<<"$hypr_general")
-assert_contains '7e9cd8' "$active_border" "Hyprland shared accent"
-
 config_files=$(flake_json xdg.configFile)
+hypr_look=$(jq -r '."hypr/looknfeel.lua".text' <<<"$config_files")
+assert_contains '7e9cd8' "$hypr_look" "Hyprland shared accent"
 colors=$(jq -r '."itterum-shell/theme/colors.toml".text' <<<"$config_files")
 assert_contains '#1f1f28' "$colors" "shell background"
 assert_contains '#dcd7ba' "$colors" "shell foreground"
@@ -45,8 +43,7 @@ assert_eq '"Bibata-Modern-Classic"' "$(flake_json home.pointerCursor.name)" "cur
 assert_eq '24' "$(flake_json home.pointerCursor.size)" "cursor size"
 assert_contains 'bibata-cursors' "$(flake_json home.pointerCursor.package)" "cursor package"
 assert_eq '"Bibata-Modern-Classic"' "$(flake_json dconf.settings."org/gnome/desktop/interface".cursor-theme)" "dconf cursor"
-hypr_env=$(flake_json wayland.windowManager.hyprland.settings.env)
-assert_contains 'XCURSOR_THEME,Bibata-Modern-Classic' "$hypr_env" "Hyprland cursor name"
-assert_contains 'XCURSOR_SIZE,24' "$hypr_env" "Hyprland cursor size"
+assert_contains 'hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")' "$hypr_look" "Hyprland cursor name"
+assert_contains 'hl.env("XCURSOR_SIZE", "24")' "$hypr_look" "Hyprland cursor size"
 
 printf 'theme regression checks passed\n'

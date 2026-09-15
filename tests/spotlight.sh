@@ -33,15 +33,16 @@ jq -e '.plugins | any(.id == "io.github.maajix.spotlight")' <<<"$shell_json" >/d
   || fail "Spotlight is enabled"
 pass "Spotlight is enabled declaratively"
 
-hyprland=$(nix eval --json "$flake_ref.wayland.windowManager.hyprland.settings")
-jq -e '.bind | any(test("ALT, Space.*io.github.maajix.spotlight"))' <<<"$hyprland" >/dev/null \
+hyprland_binds=$(jq -r '."hypr/bindings.lua".text' <<<"$config_files")
+[[ $hyprland_binds == *'ALT + SPACE'* && $hyprland_binds == *'io.github.maajix.spotlight'* ]] \
   || fail "Alt+Space opens Spotlight"
-jq -e '.layerrule | any(test("blur.*itterum-spotlight"))' <<<"$hyprland" >/dev/null \
+hyprland_look=$(jq -r '."hypr/looknfeel.lua".text' <<<"$config_files")
+[[ $hyprland_look == *'"itterum-spotlight"'* && $hyprland_look == *'hl.layer_rule('* ]] \
   || fail "Spotlight blur is declared"
 pass "Spotlight Hyprland integration is declarative"
 
 [[ -f $root/itterum-shell/shell/plugins/menu/Menu.qml ]] \
   || fail "The existing launcher remains packaged"
-jq -e '.bind | any(test("SUPER, Space.*omarchy.menu"))' <<<"$hyprland" >/dev/null \
+[[ $hyprland_binds == *'SUPER + SPACE'* && $hyprland_binds == *'omarchy.menu'* ]] \
   || fail "The existing launcher keeps its key binding"
 pass "The existing launcher remains available as fallback"

@@ -5,5 +5,4 @@
     ./hyprland
     ./itterum-shell.nix
   ];
-
 }

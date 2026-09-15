@@ -22,8 +22,8 @@ jq -e '.plugins | any(.id == "io.github.claudsondouglas.arcdock")' <<<"$shell_js
   || fail "Arc Dock is enabled"
 pass "Arc Dock is enabled declaratively"
 
-hyprland=$(nix eval --json "$flake_ref.wayland.windowManager.hyprland.settings")
-jq -e '.layerrule | any(test("blur.*arc-dock"))' <<<"$hyprland" >/dev/null \
+hyprland=$(jq -r '."hypr/looknfeel.lua".text' <<<"$config_files")
+[[ $hyprland == *'"arc-dock"'* && $hyprland == *'hl.layer_rule('* ]] \
   || fail "Arc Dock blur is declared in the compositor configuration"
 pass "Arc Dock blur is declared in the compositor configuration"
 

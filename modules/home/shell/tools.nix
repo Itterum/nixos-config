@@ -19,7 +19,7 @@
     git = {
       enable = true;
       settings = {
-        user.name = "itterum";
+        user.name = "lyashenko.ivan";
         user.email = "ivan.lyashenko.it@gmail.com";
         init.defaultBranch = "main";
       };

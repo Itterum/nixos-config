@@ -4,15 +4,15 @@ let
   palette = {
     background = "#1f1f28";
     foreground = "#dcd7ba";
-    accent = "#7e9cd8";
-    muted = "#727169";
-    selection = "#2d4f67";
-    red = "#e46876";
-    green = "#98bb6c";
-    yellow = "#e6c384";
+    accent = "#dcd7ba";
+    muted = "#54546D";
+    selection = "#363646";
+    red = "#c34043";
+    green = "#76946a";
+    yellow = "#c0a36e";
     blue = "#7e9cd8";
     magenta = "#957fb8";
-    cyan = "#7fb4ca";
+    cyan = "#6a9589";
   };
 in
 {

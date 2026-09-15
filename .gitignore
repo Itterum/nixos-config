@@ -1,5 +1,7 @@
 /.worktrees/
 /.superpowers/
 /itterum-shell/.qmlls.ini
+/result
+/*.qcow2
 
 .worktrees/

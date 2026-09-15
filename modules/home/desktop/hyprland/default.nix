@@ -1,46 +1,37 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   palette = config.itterum.theme.palette;
-  rgb = color: "rgb(${lib.removePrefix "#" color})";
+  render =
+    file:
+    builtins.replaceStrings
+      [
+        "@activeBorder@"
+        "@inactiveBorder@"
+        "@foot@"
+        "@quickshell@"
+        "@systemctl@"
+        "@loginctl@"
+      ]
+      [
+        "rgb(${lib.removePrefix "#" palette.accent})"
+        "rgb(${lib.removePrefix "#" palette.muted})"
+        (lib.getExe pkgs.foot)
+        (lib.getExe pkgs.quickshell)
+        (lib.getExe' pkgs.systemd "systemctl")
+        (lib.getExe' pkgs.systemd "loginctl")
+      ]
+      (builtins.readFile file);
 in
 {
-  imports = [ ./binds.nix ];
-
-  wayland.windowManager.hyprland = {
-    enable = true;
-    package = null;
-    portalPackage = null;
-    systemd.enable = false;
-
-    settings = {
-      "$mod" = "SUPER";
-      monitor = [ ",preferred,auto,1" ];
-      env = [
-        "XCURSOR_THEME,Bibata-Modern-Classic"
-        "XCURSOR_SIZE,24"
-      ];
-      layerrule = [
-        "blur, match:namespace ^(arc-dock)$"
-        "ignorealpha 0.05, match:namespace ^(arc-dock)$"
-        "blur, match:namespace ^(itterum-spotlight)$"
-        "ignorealpha 0.05, match:namespace ^(itterum-spotlight)$"
-      ];
-
-      general = {
-        gaps_in = 5;
-        gaps_out = 10;
-        border_size = 2;
-        layout = "dwindle";
-        "col.active_border" = rgb palette.accent;
-        "col.inactive_border" = rgb palette.muted;
-      };
-
-      decoration.rounding = 8;
-      input = {
-        kb_layout = "us";
-        follow_mouse = 1;
-      };
-    };
+  # Hyprland itself comes from the NixOS module. These are real Lua modules,
+  # adapted from Omarchy, rather than Home Manager's settings-to-Lua renderer.
+  xdg.configFile = {
+    "hypr/hyprland.lua".text = render ./hyprland.lua;
+    "hypr/monitors.lua".text = render ./monitors.lua;
+    "hypr/input.lua".text = render ./input.lua;
+    "hypr/bindings.lua".text = render ./bindings.lua;
+    "hypr/looknfeel.lua".text = render ./looknfeel.lua;
+    "hypr/autostart.lua".text = render ./autostart.lua;
   };
 }
