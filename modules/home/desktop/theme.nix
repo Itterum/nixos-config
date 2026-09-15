@@ -2,7 +2,7 @@
 
 let
   cursorName = "Bibata-Modern-Classic";
-  cursorSize = 24;
+  cursorSize = 16;
   gtkThemeName = "adw-gtk3-dark";
   iconThemeName = "WhiteSur-dark";
 in
