@@ -12,7 +12,7 @@ in
         font = "FiraCode Nerd Font:size=11";
         pad = "10x10";
       };
-      colors = {
+      colors-dark = {
         background = hex palette.background;
         foreground = hex palette.foreground;
         regular0 = hex palette.background;
