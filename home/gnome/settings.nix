@@ -16,7 +16,7 @@
       animation-spread = 0.75;
       apps-icon = false;
       apps-icon-front = false;
-      autohide-dash = false;
+      autohide-dash = true;
       autohide-speed = 0.5;
       blur-background = false;
       border-radius = 3.0;
