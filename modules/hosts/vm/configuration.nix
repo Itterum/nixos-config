@@ -14,8 +14,10 @@
 
   home-manager.users.itterum = {
     imports = [
+      self.homeModules.gnome
       self.homeModules.helix
       self.homeModules.zedEditor
+
       ../../../home/itterum.nix
     ];
   };
