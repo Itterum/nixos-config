@@ -14,8 +14,9 @@
 
   home-manager.users.itterum = {
     imports = [
-        self.homeModules.zedEditor
-       ../../../home/itterum.nix
+      self.homeModules.helix
+      self.homeModules.zedEditor
+      ../../../home/itterum.nix
     ];
   };
 
@@ -68,7 +69,6 @@
     wget
     curl
     git
-    helix
   ];
 
   services.flatpak.enable = true;

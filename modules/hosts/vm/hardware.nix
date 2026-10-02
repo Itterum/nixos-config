@@ -2,9 +2,7 @@
   flake.nixosModules.vmHardware = { config, lib, pkgs, modulesPath, ... }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-
-    
-  ];   
+  ];
 
   boot.initrd.availableKernelModules = [ "ata_piix" "mptspi" "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
