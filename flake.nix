@@ -15,7 +15,17 @@
     };
   };
 
-  outputs = inputs: inputs.flake-parts.lib.mkFlake
-    { inherit inputs; }
-    (inputs.import-tree ./modules);
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+
+      perSystem = { pkgs, ... }: {
+        formatter = pkgs.nixfmt-tree;
+      };
+
+      imports = [
+        (inputs.import-tree ./modules)
+      ];
+    };
 }
