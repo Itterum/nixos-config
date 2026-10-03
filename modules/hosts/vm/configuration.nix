@@ -68,6 +68,8 @@
       ];
     };
 
+    programs.nix-ld.enable = true;
+
     programs.firefox.enable = false;
 
     nixpkgs.config.allowUnfree = true;
