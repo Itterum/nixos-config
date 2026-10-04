@@ -1,6 +1,7 @@
-{ self, inputs, ... }: {
+{ self, inputs, ... }:
 
-  flake.nixosModules.vmConfig = { pkgs, lib, ... }: {
+{
+  flake.nixosModules.vmConfig = { pkgs, ... }: {
     # import any other modules from here
     imports = [
       self.nixosModules.vmHardware
@@ -14,7 +15,6 @@
 
     home-manager.users.itterum = {
       imports = [
-        self.homeModules.gnome
         self.homeModules.helix
         self.homeModules.zedEditor
 
@@ -37,9 +37,6 @@
     time.timeZone = "Europe/Chisinau";
 
     i18n.defaultLocale = "en_US.UTF-8";
-
-    services.displayManager.gdm.enable = true;
-    services.desktopManager.gnome.enable = true;
 
     services.xserver.xkb = {
       layout = "us";
@@ -83,5 +80,19 @@
     services.flatpak.enable = true;
 
     system.stateVersion = "26.05"; # Did you read the comment?
+  };
+
+  flake.nixosModules.vmGnome = {
+    services.displayManager.gdm.enable = true;
+    services.desktopManager.gnome.enable = true;
+
+    home-manager.users.itterum.imports = [
+      self.homeModules.gnome
+    ];
+  };
+
+  flake.nixosModules.vmKde = {
+    services.displayManager.sddm.enable = true;
+    services.desktopManager.plasma6.enable = true;
   };
 }
