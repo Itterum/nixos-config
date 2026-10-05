@@ -1,5 +1,14 @@
 { pkgs, ... }:
 
+let
+  nvm = pkgs.fetchFromGitHub {
+    owner = "nvm-sh";
+    repo = "nvm";
+    rev = "v0.40.8";
+    hash = "sha256-24FP1brAAyWu+Q0Dk+Y4aXgdCBon9GkBXgFaGXBO7sc=";
+  };
+in
+
 {
   home.username = "itterum";
   home.homeDirectory = "/home/itterum";
@@ -15,6 +24,7 @@
 
     fastfetch
     uv
+    rustup
 
     kubectl
     k9s
@@ -33,6 +43,13 @@
   programs.btop.enable = true;
 
   programs.bash.enable = true;
+  programs.bash.initExtra = ''
+    export NVM_DIR="$HOME/.nvm"
+    source ${nvm}/nvm.sh
+  '';
+
+  home.sessionVariables.NVM_DIR = "$HOME/.nvm";
+
   programs.starship = {
     enable = true;
     settings.add_newline = true;
