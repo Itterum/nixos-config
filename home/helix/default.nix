@@ -22,16 +22,12 @@
       rust-analyzer
       basedpyright
       ruff
-      csharp-ls
-      csharpier
       nixd
       nixfmt
-      qt6.qtdeclarative
       vscode-langservers-extracted
       taplo
       marksman
       bash-language-server
-      kdlfmt
     ];
   };
 }

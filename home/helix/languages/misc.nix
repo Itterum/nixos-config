@@ -3,8 +3,6 @@
 {
   programs.helix.languages = {
     language-server = {
-      csharp-ls.command = "${pkgs.csharp-ls}/bin/csharp-ls";
-      qmlls.command = "${pkgs.qt6.qtdeclarative}/bin/qmlls";
       vscode-json-language-server = {
         command = "${pkgs.vscode-langservers-extracted}/bin/vscode-json-language-server";
         args = [ "--stdio" ];
@@ -29,31 +27,10 @@
 
     language = [
       {
-        name = "c-sharp";
-        roots = [
-          "*.sln"
-          "*.slnx"
-          "*.csproj"
-        ];
-        language-servers = [ "csharp-ls" ];
-        formatter = {
-          command = "${pkgs.csharpier}/bin/dotnet-csharpier";
-          args = [
-            "format"
-            "--write-stdout"
-          ];
-        };
-        auto-format = true;
-      }
-      {
         name = "nix";
         language-servers = [ "nixd" ];
         formatter.command = "${pkgs.nixfmt}/bin/nixfmt";
         auto-format = true;
-      }
-      {
-        name = "qml";
-        language-servers = [ "qmlls" ];
       }
       {
         name = "json";
@@ -70,17 +47,6 @@
       {
         name = "bash";
         language-servers = [ "bash-language-server" ];
-      }
-      {
-        name = "kdl";
-        formatter = {
-          command = "${pkgs.kdlfmt}/bin/kdlfmt";
-          args = [
-            "format"
-            "-"
-          ];
-        };
-        auto-format = true;
       }
     ];
   };
