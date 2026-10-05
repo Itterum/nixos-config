@@ -8,10 +8,10 @@ an uncommitted copy of the VM profile, so it still contains a bootloader, disk
 UUIDs, NetworkManager, audio, printing, Flatpak, and desktop-oriented settings
 that do not belong in WSL.
 
-The installed NixOS-WSL distribution currently starts as `nixos`. Its home is
-small and contains the configuration repository, Helix configuration, and SSH
-files. The target state uses `itterum` as the default WSL user while retaining
-the old `nixos` account and home as a recovery path.
+The installed NixOS-WSL distribution currently starts as `nixos` with UID
+`1000`. Its home is small and contains the configuration repository, Helix
+configuration, and SSH files. The target state uses `itterum` as the default
+WSL user while retaining the old `nixos` account and home as a recovery path.
 
 ## Goals
 
@@ -72,6 +72,11 @@ The WSL profile will:
 
 - enable Nix flakes and `nix-command`;
 - enable NixOS-WSL and set `wsl.defaultUser = "itterum"`;
+- retain `nixos` with UID `1000`, home `/home/nixos`, and `wheel` membership,
+  then create `itterum` with UID `1001`, avoiding the NixOS-WSL module's
+  default UID `1000` collision;
+- set the WSL automount owner to UID `1001` and GID `100` so Windows-mounted
+  files belong to `itterum:users`;
 - use hostname `nixos-wsl`;
 - set the local timezone to `Europe/Minsk`;
 - connect Home Manager as a NixOS module with global packages and user
@@ -124,6 +129,8 @@ Before activation:
 After activation and WSL restart:
 
 - `whoami` returns `itterum`;
+- `nixos` retains UID `1000` and `itterum` has UID `1001`;
+- files created through the Windows automount are owned by `itterum:users`;
 - the home directory is `/home/itterum` and has correct ownership;
 - the old `nixos` account and `/home/nixos` still exist;
 - `git`, `gh`, `hx`, `rg`, `fd`, `jq`, `uv`, `kubectl`, and `k9s` resolve;
