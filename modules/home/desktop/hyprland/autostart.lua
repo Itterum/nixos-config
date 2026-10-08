@@ -1,1 +1,0 @@
--- Itterum Shell and the wallpaper are started by Home Manager user services.
