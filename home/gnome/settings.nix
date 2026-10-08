@@ -2,6 +2,10 @@
 
 {
   dconf.settings = {
+    "org/gnome/desktop/interface".clock-show-seconds = true;
+
+    "org/gnome/shell/extensions/appindicator".tray-pos = "right";
+
     "org/gnome/shell/extensions/caffeine" = {
       cli-toggle = true;
       indicator-position-max = 2;
@@ -36,6 +40,7 @@
       preferred-monitor = 0;
       pressure-sense = false;
       pressure-sense-sensitivity = 0.40000000000000002;
+      running-indicator-style = 1;
       scroll-sensitivity = 0.40000000000000002;
       shrink-icons = false;
       trash-icon = true;
@@ -51,6 +56,7 @@
 
     "org/gnome/shell/extensions/just-perfection" = {
       clock-menu-position = 1;
+      clock-menu-position-offset = 2;
       notification-banner-position = 2;
     };
 
