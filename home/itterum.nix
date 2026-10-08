@@ -23,6 +23,7 @@ in
     jq
 
     fastfetch
+    devenv
     uv
     rustup
 
