@@ -4,6 +4,7 @@
   flake.nixosModules.pcConfig = { pkgs, ... }: {
     imports = [
       self.nixosModules.pcDesktopApps
+      self.nixosModules.pcDocker
       self.nixosModules.pcHardware
       self.nixosModules.pcNvidia
       self.nixosModules.pcStorage
