@@ -6,6 +6,7 @@
       self.nixosModules.pcDesktopApps
       self.nixosModules.pcDocker
       self.nixosModules.pcHardware
+      self.nixosModules.pcJetBrains
       self.nixosModules.pcNvidia
       self.nixosModules.pcStorage
       self.nixosModules.pcSunshine
