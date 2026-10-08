@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "flake-compat": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1767039857,
-        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
-        "type": "github"
-      },
-      "original": {
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -75,38 +59,16 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1791015096,
-        "narHash": "sha256-+tbBaFkGrj4A+oQ6gvK4l8fGYdzCUFb2yojTpHe7/o8=",
+        "lastModified": 1791362670,
+        "narHash": "sha256-FMQ211XxbbzarQPFKEnYxPpwI5s4yonISTgcOWTO1G8=",
         "owner": "csoftware-arigpt",
         "repo": "nixos-chatgpt",
-        "rev": "a100e733a4b86ca8c7af5af4a9f8ff58ed5e72e3",
+        "rev": "52fbe31ff1098c04f6fbcb9d8ebf9572604abe8b",
         "type": "github"
       },
       "original": {
         "owner": "csoftware-arigpt",
         "repo": "nixos-chatgpt",
-        "type": "github"
-      }
-    },
-    "nixos-wsl": {
-      "inputs": {
-        "flake-compat": "flake-compat",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1789157919,
-        "narHash": "sha256-3+r8UDwPkTlB9hhHoN4rjGtZow3+wEFOganBKurhJhY=",
-        "owner": "nix-community",
-        "repo": "NixOS-WSL",
-        "rev": "b98199a76ab180be55f7a6a97bd4984a87c99964",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "ref": "release-26.05",
-        "repo": "NixOS-WSL",
         "type": "github"
       }
     },
@@ -179,7 +141,6 @@
         "home-manager": "home-manager",
         "import-tree": "import-tree",
         "nixos-chatgpt": "nixos-chatgpt",
-        "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_2",
         "wrapper-modules": "wrapper-modules"
       }

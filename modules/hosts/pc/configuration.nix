@@ -1,10 +1,12 @@
 { self, inputs, ... }:
 
 {
-  flake.nixosModules.vmConfig = { pkgs, ... }: {
-    # import any other modules from here
+  flake.nixosModules.pcConfig = { pkgs, ... }: {
     imports = [
-      self.nixosModules.vmHardware
+      self.nixosModules.pcDesktopApps
+      self.nixosModules.pcHardware
+      self.nixosModules.pcNvidia
+      self.nixosModules.pcSunshine
       self.nixosModules.gptApp
 
       inputs.home-manager.nixosModules.home-manager
@@ -15,6 +17,8 @@
 
     home-manager.users.itterum = {
       imports = [
+        self.homeModules.github
+        self.homeModules.gnome
         self.homeModules.helix
         self.homeModules.zedEditor
 
@@ -30,13 +34,14 @@
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
-    networking.hostName = "nixos"; # Define your hostname.
-
+    networking.hostName = "pc";
     networking.networkmanager.enable = true;
 
     time.timeZone = "Europe/Chisinau";
-
     i18n.defaultLocale = "en_US.UTF-8";
+
+    services.displayManager.gdm.enable = true;
+    services.desktopManager.gnome.enable = true;
 
     services.xserver.xkb = {
       layout = "us";
@@ -54,45 +59,28 @@
       pulse.enable = true;
     };
 
-    users.users."itterum" = {
+    users.users.itterum = {
       isNormalUser = true;
       description = "itterum";
       extraGroups = [
         "networkmanager"
+        "uinput"
         "wheel"
       ];
-      packages = with pkgs; [
-      ];
+      packages = with pkgs; [ ];
     };
 
     programs.nix-ld.enable = true;
-
-    programs.firefox.enable = false;
+    programs.firefox.enable = true;
 
     nixpkgs.config.allowUnfree = true;
 
     environment.systemPackages = with pkgs; [
-      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      vim
       wget
       curl
     ];
 
-    services.flatpak.enable = true;
-
-    system.stateVersion = "26.05"; # Did you read the comment?
-  };
-
-  flake.nixosModules.vmGnome = {
-    services.displayManager.gdm.enable = true;
-    services.desktopManager.gnome.enable = true;
-
-    home-manager.users.itterum.imports = [
-      self.homeModules.gnome
-    ];
-  };
-
-  flake.nixosModules.vmKde = {
-    services.displayManager.sddm.enable = true;
-    services.desktopManager.plasma6.enable = true;
+    system.stateVersion = "26.05";
   };
 }
