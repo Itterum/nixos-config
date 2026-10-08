@@ -6,6 +6,7 @@
 
     environment.systemPackages = with pkgs; [
       bazaar
+      brave
       google-chrome
       keepassxc
       ptyxis
