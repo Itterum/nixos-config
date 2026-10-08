@@ -31,8 +31,8 @@
     base_keymap = "JetBrains";
     theme = {
       mode = "system";
-      dark = "Kanagawa";
-      light = "Kanagawa";
+      dark = "JetBrains Islands Dark";
+      light = "JetBrains Islands Dark";
     };
     terminal = {
       shell = "system";
