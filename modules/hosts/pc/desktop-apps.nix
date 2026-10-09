@@ -26,7 +26,6 @@
         google-chrome
         jetbrainsToolbox
         keepassxc
-        ptyxis
       ];
 
       systemd.services.flatpak-flathub = {

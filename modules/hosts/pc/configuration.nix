@@ -23,7 +23,6 @@
     home-manager.users.itterum = {
       imports = [
         self.homeModules.github
-        self.homeModules.gnome
         self.homeModules.helix
         self.homeModules.zedEditor
 
