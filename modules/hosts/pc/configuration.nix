@@ -9,6 +9,7 @@
       self.nixosModules.pcHardware
       self.nixosModules.pcJetBrains
       self.nixosModules.pcKde
+      self.nixosModules.pcMaintenance
       self.nixosModules.pcNvidia
       self.nixosModules.pcStorage
       self.nixosModules.pcSunshine
