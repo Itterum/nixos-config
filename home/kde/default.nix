@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 let
+  wallpaper = "${./assets/nix-wallpaper.png}";
   kppleMenu = pkgs.stdenvNoCC.mkDerivation {
     pname = "kpple-menu";
     version = "6.1";
@@ -36,6 +37,11 @@ in
     workspace = {
       iconTheme = "WhiteSur-dark";
       cursor.theme = "WhiteSur-cursors";
+      inherit wallpaper;
+    };
+
+    kscreenlocker.appearance = {
+      inherit wallpaper;
     };
 
     panels = [
@@ -96,7 +102,13 @@ in
           "org.kde.plasma.appmenu"
           "org.kde.plasma.panelspacer"
           "org.kde.plasma.systemtray"
-          "org.kde.plasma.digitalclock"
+          {
+            digitalClock = {
+              date.enable = false;
+              time.showSeconds = "always";
+              time.format = "24h";
+            };
+          }
         ];
       }
 

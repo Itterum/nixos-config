@@ -32,6 +32,13 @@ jq -e '
     ([.widgets[] | if type == "string" then . else .name end] | index("org.kde.plasma.appmenu") != null) and
     ([.widgets[] | if type == "string" then . else .name end] | index("org.kde.plasma.systemtray") != null) and
     ([.widgets[] | if type == "string" then . else .name end] | index("org.kde.plasma.digitalclock") != null) and
+    any(.widgets[];
+      type == "object" and
+      .name == "org.kde.plasma.digitalclock" and
+      .config.Appearance.showDate == false and
+      .config.Appearance.showSeconds == 2 and
+      .config.Appearance.use24hFormat == 2
+    ) and
     ([.widgets[] | if type == "string" then . else .name end] | index("org.kde.plasma.icontasks") == null) and
     ([.widgets[] | select(type == "object" and .name == "com.github.edmogeor.kppleMenu")][0] as $menu |
       $menu.config.General.icon == "nix-snowflake" and
