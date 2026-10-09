@@ -8,6 +8,7 @@
       self.nixosModules.pcGaming
       self.nixosModules.pcHardware
       self.nixosModules.pcJetBrains
+      self.nixosModules.pcKde
       self.nixosModules.pcNvidia
       self.nixosModules.pcStorage
       self.nixosModules.pcSunshine
@@ -43,9 +44,6 @@
 
     time.timeZone = "Europe/Chisinau";
     i18n.defaultLocale = "en_US.UTF-8";
-
-    services.displayManager.gdm.enable = true;
-    services.desktopManager.gnome.enable = true;
 
     services.xserver.xkb = {
       layout = "us";
