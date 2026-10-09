@@ -25,6 +25,7 @@
         floating = true;
         alignment = "center";
         lengthMode = "fit";
+        hiding = "dodgewindows";
 
         widgets = [
           {

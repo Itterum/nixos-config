@@ -24,6 +24,7 @@ jq -e '
     .floating == true and
     .alignment == "center" and
     .lengthMode == "fit" and
+    .hiding == "dodgewindows" and
     any(.widgets[];
       type == "object" and
       .name == "org.kde.plasma.icontasks" and
