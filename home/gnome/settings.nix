@@ -2,6 +2,8 @@
 
 {
   dconf.settings = {
+    "org/gnome/desktop/input-sources".xkb-options = [ "ctrl:nocaps" ];
+
     "org/gnome/desktop/interface".clock-show-seconds = true;
 
     "org/gnome/shell/extensions/appindicator".tray-pos = "right";
