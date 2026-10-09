@@ -22,6 +22,7 @@
 
     home-manager.users.itterum = {
       imports = [
+        self.homeModules.caffeine
         self.homeModules.foot
         self.homeModules.github
         self.homeModules.helix
