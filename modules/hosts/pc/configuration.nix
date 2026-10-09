@@ -24,6 +24,7 @@
       imports = [
         self.homeModules.github
         self.homeModules.helix
+        self.homeModules.kde
         self.homeModules.zedEditor
 
         ../../../home/itterum.nix
