@@ -11,4 +11,9 @@
       initial-window-size-chars = "111x33";
     };
   };
+
+  programs.plasma.configFile."kdeglobals".General = {
+    TerminalApplication = "foot";
+    TerminalService = "foot.desktop";
+  };
 }
