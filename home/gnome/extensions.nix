@@ -5,7 +5,6 @@ let
     (pkgs.callPackage ./global-menu.nix { })
     pkgs.gnomeExtensions.just-perfection
     pkgs.gnomeExtensions.caffeine
-    pkgs.gnomeExtensions.rounded-window-corners-reborn
     pkgs.gnomeExtensions.overview-background
     pkgs.gnomeExtensions.dash2dock-lite
     pkgs.gnomeExtensions.appindicator

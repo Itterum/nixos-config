@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ ... }:
 
 {
   dconf.settings = {
@@ -60,10 +60,6 @@
       clock-menu-position = 1;
       clock-menu-position-offset = 2;
       notification-banner-position = 2;
-    };
-
-    "org/gnome/shell/extensions/rounded-window-corners-reborn" = {
-      settings-version = lib.hm.gvariant.mkUint32 9;
     };
   };
 }
