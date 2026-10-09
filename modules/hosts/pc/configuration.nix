@@ -5,6 +5,7 @@
     imports = [
       self.nixosModules.pcDesktopApps
       self.nixosModules.pcDocker
+      self.nixosModules.pcGaming
       self.nixosModules.pcHardware
       self.nixosModules.pcJetBrains
       self.nixosModules.pcNvidia

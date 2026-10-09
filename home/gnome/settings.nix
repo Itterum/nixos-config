@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   dconf.settings = {
@@ -50,7 +50,7 @@
 
     "org/gnome/shell/extensions/globalmenu" = {
       hide-overview-button = true;
-      logo-custom-icon-path = "";
+      logo-custom-icon-path = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
       logo-distro-icon = "";
       logo-distro-icon-symbolic = true;
       logo-icon-size = 16;
