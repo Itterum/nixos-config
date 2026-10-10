@@ -3,6 +3,7 @@
 {
   flake.nixosModules.pcConfig = { pkgs, ... }: {
     imports = [
+      self.nixosModules.pcBoot
       self.nixosModules.pcDesktopApps
       self.nixosModules.pcDocker
       self.nixosModules.pcGaming
@@ -38,9 +39,6 @@
       "nix-command"
       "flakes"
     ];
-
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
 
     networking.hostName = "pc";
     networking.networkmanager.enable = true;

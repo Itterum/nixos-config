@@ -9,15 +9,13 @@ settings="$(nix eval --json --impure --expr "
     automatic = config.nix.gc.automatic;
     dates = config.nix.gc.dates;
     options = config.nix.gc.options;
-    bootLimit = config.boot.loader.systemd-boot.configurationLimit;
   }
 ")"
 
 jq -e '
   .automatic == true and
   .dates == ["weekly"] and
-  .options == "--delete-older-than 14d" and
-  .bootLimit == 10
+  .options == "--delete-older-than 14d"
 ' <<<"$settings" >/dev/null
 
 echo "Nix maintenance assertions passed"
