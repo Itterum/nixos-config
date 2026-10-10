@@ -54,6 +54,10 @@ The Microsoft keys preserve Windows compatibility. Firmware-builtin keys preserv
 
 Do not use automatic enrollment and do not run a second enrollment attempt without first diagnosing the recorded result.
 
+Enrollment replaces the previous generic Platform Key, Key Exchange Key, and Database Key certificates with the local sbctl PK, KEK, and db certificates. The preflight fingerprints identify those three retired certificates exactly; every other preflight KEK and db certificate must remain in its original variable. The new PK, KEK, and db fingerprints must match their local sbctl public certificates.
+
+Gigabyte F14 may keep reporting Setup Mode until the next firmware boot cycle after accepting the new PK. If that occurs, reboot once with Secure Boot still disabled, make no additional key changes, and require `setup_mode: false` before proceeding. Never repeat enrollment merely because Setup Mode has not refreshed before that reboot.
+
 ### Enable Secure Boot
 
 The user reboots into firmware settings manually and enables Secure Boot without restoring factory keys. The user then boots NixOS through the existing Limine entry.

@@ -23,8 +23,8 @@
 ## Review Focus
 
 - Wrong firmware state: the Setup Mode task must assert `setup_mode: true` and `secure_boot: false` before enrollment is permitted.
-- Lost vendor or Windows trust: post-enrollment checks must prove all preflight KEK/db certificates remain and Microsoft certificates are present.
-- Wrong Platform Key: post-enrollment checks must prove the enrolled PK fingerprint equals `/var/lib/sbctl/keys/PK/PK.pem`.
+- Lost vendor or Windows trust: post-enrollment checks must preserve every non-retired preflight KEK and db certificate in its original variable and prove Microsoft certificates remain present.
+- Wrong replacement keys: post-enrollment checks must prove enrolled PK, KEK, and db fingerprints equal their local sbctl public certificates; only the exact preflight generic PK/KEK/db fingerprints may be retired.
 - Unbootable NixOS: the Secure Boot task must prove Limine is the current loader, its EFI binary is signed, and the system is healthy with `secure_boot: true`.
 - Incomplete compatibility validation: the final task must require a successful Windows boot and a return to NixOS with Secure Boot still enabled.
 
@@ -156,7 +156,9 @@ workspace=.superpowers/sdd/2026-10-10-secure-boot-enrollment
 sbctl status --json | tee "$workspace/setup-mode-status.json"
 jq -e '.installed == true and .setup_mode == true and .secure_boot == false' \
   "$workspace/setup-mode-status.json" >/dev/null
-bootctl status | grep -q 'Product: Limine'
+bootctl status 2>"$workspace/setup-mode-bootctl.stderr" \
+  >"$workspace/setup-mode-bootctl.txt" || true
+grep -q 'Product: Limine' "$workspace/setup-mode-bootctl.txt"
 ```
 
 Expected: Setup Mode is true, Secure Boot is false, and the current loader is Limine. If any assertion fails, stop without enrolling.
@@ -205,19 +207,31 @@ set -euo pipefail
 workspace=.superpowers/sdd/2026-10-10-secure-boot-enrollment
 sbctl status --json | tee "$workspace/post-enrollment-status.json"
 sbctl list-enrolled-keys --json > "$workspace/post-enrollment-keys.json"
-jq -e '.installed == true and .setup_mode == false and .secure_boot == false' \
+jq -e '.installed == true and .secure_boot == false' \
   "$workspace/post-enrollment-status.json" >/dev/null
-jq -e --slurpfile after "$workspace/post-enrollment-keys.json" '
-  (([.KEK[], .DB[]] | map(.Raw)) -
-   ([$after[0].KEK[], $after[0].DB[]] | map(.Raw)) | length) == 0
+test "$(jq '[.KEK[] | select(.Subject.CommonName == "Key Exchange Key")] | length' \
+  "$workspace/preflight-enrolled-keys.json")" -eq 1
+test "$(jq '[.DB[] | select(.Subject.CommonName == "Database Key")] | length' \
+  "$workspace/preflight-enrolled-keys.json")" -eq 1
+old_kek=$(jq -r '.KEK[] | select(.Subject.CommonName == "Key Exchange Key") | .Raw' \
+  "$workspace/preflight-enrolled-keys.json")
+old_db=$(jq -r '.DB[] | select(.Subject.CommonName == "Database Key") | .Raw' \
+  "$workspace/preflight-enrolled-keys.json")
+jq -e --arg retired "$old_kek" --slurpfile after "$workspace/post-enrollment-keys.json" '
+  (([.KEK[].Raw] - [$retired]) - [$after[0].KEK[].Raw] | length) == 0 and
+  ([$after[0].KEK[].Raw] | index($retired)) == null
+' "$workspace/preflight-enrolled-keys.json" >/dev/null
+jq -e --arg retired "$old_db" --slurpfile after "$workspace/post-enrollment-keys.json" '
+  (([.DB[].Raw] - [$retired]) - [$after[0].DB[].Raw] | length) == 0 and
+  ([$after[0].DB[].Raw] | index($retired)) == null
 ' "$workspace/preflight-enrolled-keys.json" >/dev/null
 jq -e '.. | objects | select(.Subject?.Organization? | arrays and index("Microsoft Corporation"))' \
   "$workspace/post-enrollment-keys.json" >/dev/null
 ```
 
-Expected: Setup Mode is false while Secure Boot remains disabled; every preflight KEK/db certificate remains enrolled; at least one Microsoft certificate is present.
+Expected: Secure Boot remains disabled; the exact old generic KEK/db fingerprints are retired, every other preflight KEK/db certificate remains in its original variable, and Microsoft certificates are present. Setup Mode may remain true until Step 5 on Gigabyte F14.
 
-- [ ] **Step 4: Prove the enrolled Platform Key matches the local sbctl certificate**
+- [ ] **Step 4: Prove enrolled PK, KEK, and db match the local sbctl certificates**
 
 Run:
 
@@ -228,20 +242,38 @@ openssl_bin=$(nix eval --raw --impure --expr '
   let pc = (builtins.getFlake "path:'"$PWD"'").nixosConfigurations.pc;
   in pc.pkgs.lib.getExe pc.pkgs.openssl
 ')
-enrolled_pk=$(
-  jq -r '.PK[0].Raw' "$workspace/post-enrollment-keys.json" |
-    base64 -d |
-    "$openssl_bin" x509 -inform DER -outform DER |
-    sha256sum | cut -d' ' -f1
-)
-local_pk=$(
-  pkexec sh -ec '"$1" x509 -in /var/lib/sbctl/keys/PK/PK.pem -outform DER' sh "$openssl_bin" |
-    sha256sum | cut -d' ' -f1
-)
-test "$enrolled_pk" = "$local_pk"
+cert_hash() {
+  base64 -d | "$openssl_bin" x509 -inform DER -outform DER | sha256sum | cut -d' ' -f1
+}
+for mapping in 'PK:Platform Key:PK' 'KEK:Key Exchange Key:KEK' 'DB:Database Key:db'; do
+  IFS=: read -r variable common_name directory <<<"$mapping"
+  enrolled=$(
+    jq -r --arg name "$common_name" ".${variable}[] | select(.Subject.CommonName == \$name) | .Raw" \
+      "$workspace/post-enrollment-keys.json" | cert_hash
+  )
+  local=$(
+    pkexec sh -ec '"$1" x509 -in "$2" -outform DER' sh "$openssl_bin" \
+      "/var/lib/sbctl/keys/$directory/$directory.pem" | sha256sum | cut -d' ' -f1
+  )
+  test "$enrolled" = "$local"
+done
 ```
 
-Expected: both SHA-256 fingerprints are identical. Do not print or read any private key.
+Expected: enrolled PK, KEK, and db SHA-256 fingerprints match their local public certificates. Do not print or read any private key.
+
+- [ ] **Step 5: Refresh firmware mode without repeating enrollment**
+
+If `post-enrollment-status.json` still reports `setup_mode: true`, ask the user to reboot NixOS once with Secure Boot still disabled and without changing keys. After reboot, run:
+
+```bash
+set -euo pipefail
+workspace=.superpowers/sdd/2026-10-10-secure-boot-enrollment
+sbctl status --json | tee "$workspace/post-enrollment-reboot-status.json"
+jq -e '.installed == true and .setup_mode == false and .secure_boot == false' \
+  "$workspace/post-enrollment-reboot-status.json" >/dev/null
+```
+
+Expected: Setup Mode is false and Secure Boot remains disabled. Do not repeat enrollment if this gate fails; stop and diagnose firmware state.
 
 ### Task 4: Enable Secure Boot and Validate NixOS
 
@@ -277,7 +309,9 @@ jq -e '.installed == true and .setup_mode == false and .secure_boot == true' \
   "$workspace/secure-boot-status.json" >/dev/null
 jq -e 'any(.[]; (.file_name | ascii_downcase | endswith("/efi/limine/bootx64.efi")) and (.is_signed == 1))' \
   "$workspace/secure-boot-verify.json" >/dev/null
-bootctl status | grep -q 'Product: Limine'
+bootctl status 2>"$workspace/secure-boot-bootctl.stderr" \
+  >"$workspace/secure-boot-bootctl.txt" || true
+grep -q 'Product: Limine' "$workspace/secure-boot-bootctl.txt"
 test "$(systemctl is-system-running)" = running
 systemctl is-active display-manager.service
 systemctl is-active home-manager-itterum.service
@@ -313,7 +347,10 @@ Run:
 set -euo pipefail
 status=$(sbctl status --json)
 jq -e '.installed == true and .setup_mode == false and .secure_boot == true' <<<"$status" >/dev/null
-bootctl status | grep -q 'Product: Limine'
+workspace=.superpowers/sdd/2026-10-10-secure-boot-enrollment
+bootctl status 2>"$workspace/final-cross-boot-bootctl.stderr" \
+  >"$workspace/final-cross-boot-bootctl.txt" || true
+grep -q 'Product: Limine' "$workspace/final-cross-boot-bootctl.txt"
 test "$(systemctl is-system-running)" = running
 sha256sum --check /mnt/storage/secure-boot-backup/pc-sbctl-keys-2026-10-10.tar.age.sha256
 test "$(git rev-parse HEAD)" = "$(git rev-parse '@{upstream}')"
