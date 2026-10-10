@@ -137,14 +137,22 @@ git commit -m "feat: migrate pc bootloader to Limine"
 
 - [ ] **Step 1: Capture the pre-switch recovery state**
 
-Run a read-only privileged check using PolicyKit and save its output outside the repository or in the plan's ignored execution workspace:
+Resolve `efibootmgr` from the pinned nixpkgs, then run a strict read-only privileged check using PolicyKit. Save its output outside the repository or in the plan's ignored execution workspace:
 
 ```bash
-pkexec sh -c '
+set -o pipefail
+efi_pkg=$(nix build --no-link --print-out-paths --impure --expr '
+  let pc = (builtins.getFlake "path:$PWD").nixosConfigurations.pc;
+  in pc.pkgs.lib.getBin pc.pkgs.efibootmgr
+')
+
+{
+pkexec sh -ec '
   test -f /boot/EFI/systemd/systemd-bootx64.efi
   test -f /boot/loader/loader.conf
-  efibootmgr -v
 '
+pkexec "$efi_pkg/bin/efibootmgr" -v
+} | tee .superpowers/sdd/2026-10-10-limine-stage-1/pre-switch-efi.txt
 ```
 
 Expected: both files exist and `efibootmgr` lists an active `Linux Boot Manager` entry. Record that entry's four-digit ID.
@@ -165,14 +173,22 @@ Expected: exit status 0, with the new NixOS system path printed. Do not reboot.
 Run:
 
 ```bash
-pkexec sh -c '
+set -o pipefail
+efi_pkg=$(nix build --no-link --print-out-paths --impure --expr '
+  let pc = (builtins.getFlake "path:$PWD").nixosConfigurations.pc;
+  in pc.pkgs.lib.getBin pc.pkgs.efibootmgr
+')
+
+{
+pkexec sh -ec '
   test -f /boot/EFI/limine/BOOTX64.EFI
   test -f /boot/limine/limine.conf
   test -f /boot/EFI/systemd/systemd-bootx64.efi
   test -f /boot/loader/loader.conf
   grep -q "NixOS default profile" /boot/limine/limine.conf
-  efibootmgr -v
 '
+pkexec "$efi_pkg/bin/efibootmgr" -v
+} | tee .superpowers/sdd/2026-10-10-limine-stage-1/post-switch-efi.txt
 ```
 
 Expected: all four files exist; `limine.conf` contains NixOS entries; `efibootmgr` lists active `Limine` and the previously recorded `Linux Boot Manager` entry; the first ID in `BootOrder` is the Limine entry.
