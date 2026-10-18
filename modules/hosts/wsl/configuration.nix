@@ -10,8 +10,10 @@
       home-manager.useUserPackages = true;
       home-manager.users.nixos = {
         imports = [
+          self.homeModules.foot
           self.homeModules.github
           self.homeModules.helix
+          self.homeModules.kde
           self.homeModules.zedEditor
 
           ../../../home/nixos.nix
@@ -43,6 +45,7 @@
 
       environment.plasma6.excludePackages = with pkgs.kdePackages; [
         elisa
+        konsole
         kwin-x11
         krdp
         plasma-workspace-wallpapers

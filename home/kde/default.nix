@@ -67,22 +67,6 @@ in
                   name = "System Preferences...";
                   command = "systemsettings";
                 }
-                {
-                  type = "item";
-                  name = "App Store...";
-                  command = "plasma-discover";
-                }
-                { type = "divider"; }
-                {
-                  type = "item";
-                  name = "Restart...";
-                  command = "qdbus org.kde.LogoutPrompt /LogoutPrompt promptReboot";
-                }
-                {
-                  type = "item";
-                  name = "Shut Down...";
-                  command = "qdbus org.kde.LogoutPrompt /LogoutPrompt promptShutDown";
-                }
                 { type = "divider"; }
                 {
                   type = "item";
@@ -126,11 +110,8 @@ in
             config.General.launchers = [
               "applications:org.kde.dolphin.desktop"
               "applications:foot.desktop"
-              "applications:com.google.Chrome.desktop"
               "applications:com.brave.Browser.desktop"
               "applications:dev.zed.Zed.desktop"
-              "applications:steam.desktop"
-              "applications:jetbrains-idea-7606aa57-547c-45b5-99a7-6cf98e137b1d.desktop"
             ];
           }
         ];
