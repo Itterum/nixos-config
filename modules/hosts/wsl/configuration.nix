@@ -1,9 +1,23 @@
-{ ... }:
+{ self, inputs, ... }:
 
 {
   flake.nixosModules.wslConfig =
     { pkgs, ... }:
     {
+      imports = [ inputs.home-manager.nixosModules.home-manager ];
+
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+      home-manager.users.nixos = {
+        imports = [
+          self.homeModules.github
+          self.homeModules.helix
+          self.homeModules.zedEditor
+
+          ../../../home/nixos.nix
+        ];
+      };
+
       nixpkgs.hostPlatform = "x86_64-linux";
       nixpkgs.config.allowUnfree = true;
 

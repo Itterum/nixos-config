@@ -10,8 +10,8 @@ let
 in
 
 {
-  home.username = "itterum";
-  home.homeDirectory = "/home/itterum";
+  home.username = "nixos";
+  home.homeDirectory = "/home/nixos";
 
   home.stateVersion = "26.05";
 
@@ -61,17 +61,9 @@ in
     nix-direnv.enable = true;
   };
 
-  programs.eza = {
-    enable = true;
-  };
-
-  programs.fzf = {
-    enable = true;
-  };
-
-  programs.zoxide = {
-    enable = true;
-  };
+  programs.eza.enable = true;
+  programs.fzf.enable = true;
+  programs.zoxide.enable = true;
 
   programs.home-manager.enable = true;
 }
