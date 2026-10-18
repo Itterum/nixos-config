@@ -30,6 +30,8 @@ in
     kubectl
     k9s
     teleport
+
+    codex
   ];
 
   programs.git = {
