@@ -49,7 +49,10 @@ in
       init.defaultBranch = "main";
     };
   };
-  programs.gh.enable = true;
+  programs.gh = {
+    enable = true;
+    settings.git_protocol = "ssh";
+  };
 
   programs.home-manager.enable = true;
   programs.bash.enable = true;
