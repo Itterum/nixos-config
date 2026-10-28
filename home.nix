@@ -110,6 +110,7 @@ in
   xdg.configFile."zellij/plugins/zjstatus.wasm".source = pkgs.zellijPlugins.zjstatus;
   xdg.configFile."emacs/themes/islands-dark-transparent-theme.el".source =
     ./emacs/islands-dark-transparent-theme.el;
+  xdg.configFile."emacs/files.el".source = ./emacs/files.el;
   xdg.configFile."emacs/languages.el".source = emacsLanguageConfig;
 
   programs.emacs = {
@@ -142,6 +143,7 @@ in
       (mapc #'disable-theme custom-enabled-themes)
       (load-theme 'islands-dark-transparent t)
 
+      (load "${config.xdg.configHome}/emacs/files.el" nil nil)
       (load "${config.xdg.configHome}/emacs/languages.el" nil nil)
 
       (require 'which-key)
