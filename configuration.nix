@@ -5,24 +5,30 @@
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports = [
-    <nixos-wsl/modules>
-  ];
-
   wsl.enable = true;
   wsl.defaultUser = "nixos";
+  wsl.ssh-agent.enable = true;
+
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   environment.systemPackages = with pkgs; [
     wget
     curl
-    git
-    helix
   ];
 
   programs.nix-ld.enable = true;
+  programs.direnv.enable = true;
 
-  system.stateVersion = "26.05"; 
+  system.stateVersion = "26.05";
 }
