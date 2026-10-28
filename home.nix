@@ -69,6 +69,7 @@ in
   programs.zellij = {
     enable = true;
     settings = {
+      default_mode = "locked";
       default_layout = "default";
       pane_frames = false;
     };
