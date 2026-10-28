@@ -48,6 +48,12 @@
    `(vertical-border ((t (:foreground ,surface))))
    `(window-divider ((t (:foreground ,surface))))
 
+   `(corfu-default ((t (:foreground ,foreground :background ,surface))))
+   `(corfu-current ((t (:foreground ,foreground :background ,highlight))))
+   `(corfu-border ((t (:background ,surface-dark))))
+   `(corfu-bar ((t (:background ,muted))))
+   `(corfu-annotations ((t (:foreground ,muted :background ,surface))))
+
    `(line-number ((t (:foreground ,subtle :background ,transparent))))
    `(line-number-current-line ((t (:foreground ,foreground
                                   :background ,transparent
