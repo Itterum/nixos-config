@@ -65,10 +65,6 @@
   :ensure t
   :defer t)
 
-(use-package markdown-ts-mode
-  :ensure nil
-  :defer t)
-
 (use-package which-key
   :ensure t
   :custom
@@ -113,8 +109,8 @@
 
 (defconst islands-eglot-modes
   '(typescript-ts-mode tsx-ts-mode js-ts-mode rust-ts-mode c-ts-mode
-    c++-ts-mode python-ts-mode nix-ts-mode json-ts-mode toml-ts-mode
-    markdown-ts-mode bash-ts-mode))
+		       c++-ts-mode python-ts-mode nix-ts-mode json-ts-mode toml-ts-mode
+		       markdown-ts-mode bash-ts-mode))
 
 (defun islands-eglot-ensure ()
   "Start Eglot without making an ordinary buffer fail to open."
@@ -135,15 +131,15 @@
    eglot-workspace-configuration
    '(:rust-analyzer
      (:check (:command "clippy" :allTargets t)
-      :cargo (:buildScripts (:enable t))
-      :procMacro (:enable t)
-      :completion (:fullFunctionSignatures (:enable t))
-      :imports (:granularity (:group "module"))
-      :inlayHints
-      (:bindingModeHints (:enable t)
-       :closureReturnTypeHints (:enable "with_block")
-       :lifetimeElisionHints (:enable "skip_trivial"
-                              :useParameterNames t))))))
+	     :cargo (:buildScripts (:enable t))
+	     :procMacro (:enable t)
+	     :completion (:fullFunctionSignatures (:enable t))
+	     :imports (:granularity (:group "module"))
+	     :inlayHints
+	     (:bindingModeHints (:enable t)
+				:closureReturnTypeHints (:enable "with_block")
+				:lifetimeElisionHints (:enable "skip_trivial"
+							       :useParameterNames t))))))
 
 (use-package eglot
   :ensure nil
