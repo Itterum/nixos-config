@@ -6,6 +6,11 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -14,6 +19,7 @@
       nixpkgs,
       nixos-wsl,
       home-manager,
+      emacs-overlay,
       ...
     }:
     {
@@ -24,6 +30,8 @@
             nixos-wsl.nixosModules.default
             home-manager.nixosModules.home-manager
             {
+              nixpkgs.overlays = [ emacs-overlay.overlays.default ];
+
               system.stateVersion = "26.05";
               wsl.enable = true;
 
