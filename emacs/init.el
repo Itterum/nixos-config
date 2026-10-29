@@ -7,6 +7,13 @@
     (or (getenv "XDG_CACHE_HOME")
         (expand-file-name "~/.cache")))))
 
+(defconst islands-emacs-state-directory
+  (file-name-as-directory
+   (expand-file-name
+    "emacs"
+    (or (getenv "XDG_STATE_HOME")
+        (expand-file-name "~/.local/state")))))
+
 (let ((backup-directory
        (expand-file-name "backups/" islands-emacs-cache-directory))
       (auto-save-directory
@@ -24,7 +31,8 @@
         lock-file-name-transforms
         `((".*" ,lock-directory sha256))))
 
-(setq custom-file (expand-file-name "custom.el" islands-emacs-cache-directory))
+(make-directory islands-emacs-state-directory t)
+(setq custom-file (expand-file-name "custom.el" islands-emacs-state-directory))
 (load custom-file t)
 
 (setq display-line-numbers-type 'relative
