@@ -1,7 +1,9 @@
 { config, pkgs, ... }:
 
 let
-  emacsLanguageConfig = pkgs.replaceVars ../emacs/languages.el {
+  emacsInit = pkgs.replaceVars ../emacs/init.el {
+    emacsConfigDirectory = "${config.xdg.configHome}/emacs";
+
     typescriptLanguageServer = "${pkgs.typescript-language-server}/bin/typescript-language-server";
     rustAnalyzer = "${pkgs.rust-analyzer}/bin/rust-analyzer";
     clangd = "${pkgs.clang-tools}/bin/clangd";
@@ -19,24 +21,11 @@ let
     nixfmt = "${pkgs.nixfmt}/bin/nixfmt";
     shfmt = "${pkgs.shfmt}/bin/shfmt";
   };
-in
 
-{
-  xdg.configFile."emacs/themes/islands-dark-transparent-theme.el".source =
-    ../emacs/islands-dark-transparent-theme.el;
-  xdg.configFile."emacs/files.el".source = ../emacs/files.el;
-  xdg.configFile."emacs/languages.el".source = emacsLanguageConfig;
-
-  programs.emacs = {
-    enable = true;
+  emacsPackage = pkgs.emacsWithPackagesFromUsePackage {
+    config = emacsInit;
     package = pkgs.emacs-nox;
-    extraPackages = epkgs: [
-      epkgs.nix-mode
-      epkgs.which-key
-      epkgs.corfu
-      epkgs.apheleia
-      epkgs.nix-ts-mode
-      epkgs.markdown-ts-mode
+    extraEmacsPackages = epkgs: [
       (epkgs.treesit-grammars.with-grammars (
         grammars: with grammars; [
           tree-sitter-bash
@@ -54,18 +43,13 @@ in
         ]
       ))
     ];
-    extraConfig = ''
-      (add-to-list 'custom-theme-load-path "${config.xdg.configHome}/emacs/themes")
-      (mapc #'disable-theme custom-enabled-themes)
-      (load-theme 'islands-dark-transparent t)
-
-      (load "${config.xdg.configHome}/emacs/files.el" nil nil)
-      (load "${config.xdg.configHome}/emacs/languages.el" nil nil)
-
-      (require 'which-key)
-      (which-key-mode 1)
-
-      (setq which-key-idle-delay 0.1)
-    '';
   };
+in
+
+{
+  xdg.configFile."emacs/themes/islands-dark-transparent-theme.el".source =
+    ../emacs/islands-dark-transparent-theme.el;
+
+  home.file.".emacs.d/init.el".source = emacsInit;
+  home.packages = [ emacsPackage ];
 }
